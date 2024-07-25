@@ -4,6 +4,7 @@ import mt_table from './components/mt-table.vue'
 import mt_select from './components/mt-select.vue'
 import mt_btnGroup from './components/mt-btnGroup.vue'
 import { get, post, put, del } from './components/axiosBag'
+import mt_cascader from './components/mt-cascader.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -30,16 +31,16 @@ const selectValue = ref()
 // ])
 // const btns = ref(['按钮1', '按钮2', '按钮3'])
 
-onMounted(() => {
-  get('/test', {}).then(response => {
-    thead.value = response.thead
-    tbody.value = response.tbody
-    options.value = response.options
-    btns.value = response.btns
-  }).catch(error => {
-    console.error(error);
-  });
-})
+// onMounted(() => {
+//   get('/test', {}).then(response => {
+//     thead.value = response.thead
+//     tbody.value = response.tbody
+//     options.value = response.options
+//     btns.value = response.btns
+//   }).catch(error => {
+//     console.error(error);
+//   });
+// })
 
 const test = () => {
   console.log(selectValue.value.getSelect())
@@ -59,15 +60,18 @@ async function postTest() {
 
 <template>
   <div class="title">
-    <div style="position: absolute; left: 20%;">
+    <!-- <div style="position: absolute; left: 20%;">
       <mt_table :thead="thead" :tbody="tbody" :width="1000" />
     </div>
     <mt_select ref="selectValue" :options="options" />
     <div style="position: absolute; left: 20%;">
       <mt_btnGroup :btns="btns" :method="clickBtns" />
+    </div> -->
+    <div style="position: absolute; left: 10%; top: 10%;">
+      <mt_cascader />
     </div>
-    <button @click="test">Test</button>
-    <button @click="postTest">Post</button>
+    <!-- <button @click="test">Test</button>
+    <button @click="postTest">Post</button> -->
   </div>
 </template>
 
@@ -78,6 +82,6 @@ async function postTest() {
   left: 0%;
   width: 100%;
   height: 100%;
-  background-color: skyblue;
+  background-color: #ccc;
 }
 </style>
