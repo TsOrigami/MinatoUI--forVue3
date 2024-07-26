@@ -68,7 +68,7 @@ async function postTest() {
       <mt_btnGroup :btns="btns" :method="clickBtns" />
     </div> -->
     <div style="position: absolute; left: 10%; top: 10%;">
-      <mt_cascader />
+      <mt_cascader defaultNode="Cascader" />
     </div>
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
@@ -81,7 +81,7 @@ async function postTest() {
   top: 0%;
   left: 0%;
   width: 100%;
-  height: 100%;
-  background-color: #ccc;
+  height: 150%;
+  /* background-color: #ccc; */
 }
 </style>
