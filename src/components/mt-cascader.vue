@@ -4,6 +4,11 @@
 //2024.7.26更新 能够读取DATA数组,生成一个列表。完成了箭头的翻转。
 //          未解决的问题：无法读取className
 
+//2024.7.27更新 不用className了，单独封装了函数
+//          点击选择器会直接展开DATA数组
+
+
+
 import { ref, defineProps, watch, onMounted } from 'vue'
 
 const data = defineProps({
@@ -17,7 +22,7 @@ const data = defineProps({
     },
     height:{
         type:Number,
-        default:40
+        default: 50
     },
 })
 
@@ -33,21 +38,42 @@ const boardData = ref([
             {
                 value: "C",
                 label: "Ctest",
+                children:[
+                    {
+                        value: "F",
+                        label: "Ftest"
+                    }   
+                ]
             }
         ]
     },
     {
         value: "D",
         label: "Dtest",
+        children: [
+            {
+                value: "E",
+                label: "Etest",
+            }
+        ]
     },
 ])
-
 const mt_Node = ref("")
 const mt_colorLock = ref(false)
 
 onMounted(()=>{
     mt_Node.value = data.defaultNode
 })
+
+const mt_create = () =>{
+    mt_createBoardItem(boardData.value, 0)
+    mt_createMask()
+}
+
+const mt_delect = () =>{
+    mt_delectMask()
+    mt_delectBoard()
+}
 
 const mt_createMask = () =>{
     mt_colorLock.value = true
@@ -63,7 +89,6 @@ const mt_delectMask = () =>{
     document.getElementById('mt_Arrow').style.transform = 'rotate(0deg)'
 }
 
-
 const mt_colorHigh = () =>{
     document.getElementById('mt_ColorExcMain').style.borderColor = 'blue'
     document.getElementById('mt_ColorExcArrow').style.borderColor = 'blue'
@@ -76,49 +101,76 @@ const mt_colorLow = () =>{
     }
 }
 
-const mt_createBoardSingle =(item) =>{
+const mt_createBoardSingle =(item, boardID) =>{
     const div = document.createElement('div');
     div.id = item.value
     div.className = 'mt_Border'
     div.style.width = data.width - 15 + 'px';
     div.style.height = data.height + 'px';
     div.innerHTML = item.label;
-    document.getElementById("mt_cascaderBoard").appendChild(div)
+    div.style.position = "relative";
+    div.style.left= "5px";
+    document.getElementById(boardID).appendChild(div)
     console.log(div)
 }
 
-const mt_createBoard = (tableData) =>{
-    console.log(tableData)
-    for(let item in tableData){
-        mt_createBoardSingle(tableData[item])
-        if(tableData[item].children){
-            mt_createBoard(tableData[item].children)
+const mt_createBoardItem = (cascaderData, boardNum) =>{
+    let newBoardID = "mt_cascaderBoard" + boardNum
+    mt_createBoard("mt_ColorExcMain", newBoardID, boardNum)
+    for(let item in cascaderData){
+        mt_createBoardSingle(cascaderData[item], newBoardID)
+        if(cascaderData[item].children){
+            mt_createBoardItem(cascaderData[item].children, boardNum + 1)
         }
     }
 }
 
+const mt_createBoard = (oldBoardID, newBoardID, boardNum) =>{
+    if(document.getElementById(newBoardID)) return
+    const Selected = document.getElementById(oldBoardID)
+    const cascaderBoard = document.createElement('div')
+    cascaderBoard.id = newBoardID
+    cascaderBoard.style.position = "absolute"
+    cascaderBoard.style.width = data.width +'px' 
+    cascaderBoard.style.margin = "2px 0 0 0"
+    cascaderBoard.style.height = "auto";
+    cascaderBoard.style.borderRadius = "10px";
+    cascaderBoard.style.border = "2px solid blue";
+    cascaderBoard.style.backgroundColor = "white";
+    cascaderBoard.style.left = boardNum * (data.width + 2) +'px'
+    console.log(boardNum * data.width +'px')
+    Selected.after(cascaderBoard)
+}
+
+const mt_delectBoard = () =>{
+    let item = 0
+    while(document.getElementById("mt_cascaderBoard" + item)){
+        document.getElementById("mt_cascaderBoard" + item).remove()
+        item ++;
+    }
+}
+
 const test = () =>{
-    const testData = boardData.value
-    mt_createBoard(testData)
+    mt_createBoardItem(boardData.value, 0)
 }
 
 </script>
 
 <template>
     <button @click="test">test</button>
-    <div id="mt_Masklayer" class="mt_Masklayer" @click="mt_delectMask"></div>
+    <div id="mt_Masklayer" class="mt_Masklayer" @click="mt_delect"></div>
     <div :style="{width: width+'px',height: height+'px'}">
-        <div id="mt_ColorExcMain" class="mt_Cascader" @click="mt_createMask" @mouseover="mt_colorHigh" @mouseleave="mt_colorLow">
-            <div id="mt_Selected" class="mt_Selected" :style="{height:height*0.6+'px', lineHeight: height*0.6+'px'}">{{mt_Node}}</div>
-            <div id="mt_Arrow" class="mt_RotateArrow" :style="{height: height*0.3+'px', width: height*0.3+'px'}">
-            <div id="mt_ColorExcArrow" class="mt_Arrow" :style="{height: height*0.3+'px', width: height*0.3+'px', top:-height*0.1+'px'}" />
+        <div id="mt_ColorExcMain" class="mt_Cascader" @click="mt_create" @mouseover="mt_colorHigh" @mouseleave="mt_colorLow">
+            <div id="mt_Selected" class="mt_Selected" :style="{height: height*0.6+'px', lineHeight: height*0.6+'px'}">{{mt_Node}}</div>
+            <div id="mt_Arrow" class="mt_RotateArrow" :style="{height: height * 0.3+'px', width: height * 0.3+'px'}">
+                <div id="mt_ColorExcArrow" class="mt_Arrow" :style="{height: height*0.3+'px', width: height*0.3+'px' ,top: '20%'}" />
             </div>
         </div>
     </div>
-    <div id="mt_cascaderBoard" class="mt_cascaderBoard" :style="{width: width+'px'}"/>
 </template>
 
 <style scoped>
+
 .mt_Cascader {
     position: relative;
     left: 0;
@@ -140,25 +192,30 @@ const test = () =>{
     width: 100%;
     height: 100%;
     z-index: 999;
-    background: rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0);
     visibility: hidden;
 }
 
 .mt_RotateArrow{
-    transition-duration:0.3s;
+    transition-duration:0.2s;
     position:absolute;
     right: 5%;
     top: 35%;
+
+    /* background-color: skyblue;  */
 }
 
 .mt_Arrow {
     display: inline-block;
+    position: absolute;
+    border:4px solid skyblue;
+    transition-duration:0.2s;
+    box-sizing: border-box;
+    border-bottom: 0px;
+    border-right: 0px;
     transform: rotate(45deg);
-    position: relative;
-    border-style: solid;
-    border-width: 3px 0px 0px 3px;
-    border-color: skyblue;
-    transition-duration:0.6s;
+
+    /* background-color: gray;  */
 }
 
 .mt_Selected{
@@ -169,19 +226,4 @@ const test = () =>{
     bottom: 20%;
 }
 
-.mt_cascaderBoard{
-    height: auto;
-    border-radius: 10px;
-    border: 2px solid blue;
-    background-color: white;
-}
-
-.mt_Border{
-    position : relative;
-    left: 5px;
-    background :white;
-    border-style: solid;
-    border-color: blue;
-    border-width: 0px 0px 2px 0px;
-}
 </style>
