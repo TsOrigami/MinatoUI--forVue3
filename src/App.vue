@@ -1,10 +1,14 @@
 <script setup>
+
+//这个页面用于测试
+
 import { ref, onMounted } from 'vue'
 import mt_table from './components/mt-table.vue'
 import mt_select from './components/mt-select.vue'
 import mt_btnGroup from './components/mt-btnGroup.vue'
 import { get, post, put, del } from './components/axiosBag'
 import mt_cascader from './components/mt-cascader.vue'
+import mt_button from './components/mt-button.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -42,18 +46,22 @@ const selectValue = ref()
 //   });
 // })
 
-const test = () => {
-  console.log(selectValue.value.getSelect())
-}
+// const test = () => {
+//   console.log(selectValue.value.getSelect())
+// }
 
-const clickBtns = (index) => {
-  console.log(index)
-}
+// const clickBtns = (index) => {
+//   console.log(index)
+// }
 
-async function postTest() {
-  await post('/post', { 'num': 1 }).then(response => {
-    console.log(response)
-  })
+// async function postTest() {
+//   await post('/post', { 'num': 1 }).then(response => {
+//     console.log(response)
+//   })
+// }
+
+const aaa = () =>{
+  alert("AAA")
 }
 
 </script>
@@ -67,11 +75,12 @@ async function postTest() {
     <div style="position: absolute; left: 20%;">
       <mt_btnGroup :btns="btns" :method="clickBtns" />
     </div> -->
-    <div style="position: absolute; left: 10%; top: 10%;">
+    <!-- <div style="position: absolute; left: 10%; top: 10%;">
       <mt_cascader defaultNode="Cascader" />
-    </div>
+    </div> -->
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
+    <mt_button height='50' width='200' type="info" @click="aaa" round>mt_button</mt_button>
   </div>
 </template>
 
