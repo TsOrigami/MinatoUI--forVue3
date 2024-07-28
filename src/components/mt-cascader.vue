@@ -7,6 +7,7 @@
 //2024.7.27更新 不用className了，单独封装了函数
 //          点击选择器会直接展开DATA数组
 
+//2024.7.28更新 基本完成 明天写多选
 
 
 import { ref, defineProps, watch, onMounted } from 'vue'
@@ -14,7 +15,7 @@ import { ref, defineProps, watch, onMounted } from 'vue'
 const data = defineProps({
     defaultNode: {
         type:String,
-        default:"Enter"
+        default:"Test"
     },
     width:{
         type:Number,
@@ -58,8 +59,11 @@ const boardData = ref([
         ]
     },
 ])
+
 const mt_Node = ref("")
 const mt_colorLock = ref(false)
+const mt_ISselect = ref([])
+const mt_ISselectTemp = ref([])
 
 onMounted(()=>{
     mt_Node.value = data.defaultNode
@@ -72,7 +76,10 @@ const mt_create = () =>{
 
 const mt_delect = () =>{
     mt_delectMask()
-    mt_delectBoard()
+    mt_delectBoard(0)
+    if(mt_Node.value == data.defaultNode){
+        mt_ISselect.value = []
+    }
 }
 
 const mt_createMask = () =>{
@@ -101,27 +108,76 @@ const mt_colorLow = () =>{
     }
 }
 
-const mt_createBoardSingle =(item, boardID) =>{
-    const div = document.createElement('div');
-    div.id = item.value
-    div.className = 'mt_Border'
-    div.style.width = data.width - 15 + 'px';
-    div.style.height = data.height + 'px';
-    div.innerHTML = item.label;
-    div.style.position = "relative";
-    div.style.left= "5px";
-    document.getElementById(boardID).appendChild(div)
-    console.log(div)
+const mt_examineData = (item, boardNum) => {
+    mt_ISselectTemp.value[boardNum] = item.label
+    mt_ISselectTemp.value.length = boardNum + 1
+    if(item.children){
+        mt_delectBoard(boardNum + 1)
+        mt_createBoardItem(item.children, boardNum + 1)
+    } else {
+        mt_ISselect.value = mt_ISselectTemp.value.slice()
+        let dataLable = ""
+        for(let t = 0; t <= boardNum; t++) {
+            dataLable += mt_ISselect.value[t]
+            if(t != boardNum) dataLable += '/'
+        }
+        if(mt_Node.value == dataLable){
+            mt_Node.value = data.defaultNode
+            mt_ISselect.value.length = 0
+        } else {
+            mt_Node.value = dataLable
+        }
+        mt_delect()
+    }
+}
+
+const mt_createBoardSingle = (item, boardNum) =>{
+    const boardID = "mt_cascaderBoard" + boardNum
+    const mt_div = document.createElement('div');
+    mt_div.id = item.value
+    mt_div.style.zIndex = '11'
+    mt_div.style.width = data.width - 15 + 'px';
+    mt_div.style.height = data.height + 'px';
+    mt_div.style.lineHeight = data.height + 'px';
+    mt_div.style.fontSize = data.height * 0.3 + 'px'
+    mt_div.style.fontWeight = 'bold'
+    mt_div.innerHTML = item.label
+    if(item.label == mt_ISselect.value[boardNum]) {
+        mt_div.style.color = "blue"
+    }
+    mt_div.style.position = "relative";
+    mt_div.style.left= "5px";
+    document.getElementById(boardID).appendChild(mt_div)
+    if(item.children){
+        const mt_arrowSmall = document.createElement('div');
+        mt_arrowSmall.style.position = "absolute"
+        mt_arrowSmall.style.width = data.height * 0.2 +'px'
+        mt_arrowSmall.style.height = data.height * 0.2 +'px'
+        mt_arrowSmall.style.top = "37.5%"
+        mt_arrowSmall.style.right = "5%"
+        mt_arrowSmall.style.display = 'inline-block'
+        mt_arrowSmall.style.transform = "rotate(45deg)"
+        mt_arrowSmall.style.borderStyle = "solid"
+        mt_arrowSmall.style.borderBottom = '3px'
+        mt_arrowSmall.style.borderLeft = '3px'
+        if(item.label == mt_ISselect.value[boardNum]) {
+            mt_arrowSmall.style.borderColor = 'blue'
+        } else {
+            mt_arrowSmall.style.borderColor = 'grey'
+        }
+        mt_div.append(mt_arrowSmall)
+    }
+    mt_div.onclick = function(){mt_examineData(item, boardNum)}
 }
 
 const mt_createBoardItem = (cascaderData, boardNum) =>{
     let newBoardID = "mt_cascaderBoard" + boardNum
     mt_createBoard("mt_ColorExcMain", newBoardID, boardNum)
     for(let item in cascaderData){
-        mt_createBoardSingle(cascaderData[item], newBoardID)
-        if(cascaderData[item].children){
-            mt_createBoardItem(cascaderData[item].children, boardNum + 1)
-        }
+        mt_createBoardSingle(cascaderData[item], boardNum)
+        // if(cascaderData[item].children){
+        //     mt_createBoardItem(cascaderData[item].children, boardNum + 1)
+        // }
     }
 }
 
@@ -130,6 +186,7 @@ const mt_createBoard = (oldBoardID, newBoardID, boardNum) =>{
     const Selected = document.getElementById(oldBoardID)
     const cascaderBoard = document.createElement('div')
     cascaderBoard.id = newBoardID
+    cascaderBoard.style.zIndex = '10'
     cascaderBoard.style.position = "absolute"
     cascaderBoard.style.width = data.width +'px' 
     cascaderBoard.style.margin = "2px 0 0 0"
@@ -138,12 +195,11 @@ const mt_createBoard = (oldBoardID, newBoardID, boardNum) =>{
     cascaderBoard.style.border = "2px solid blue";
     cascaderBoard.style.backgroundColor = "white";
     cascaderBoard.style.left = boardNum * (data.width + 2) +'px'
-    console.log(boardNum * data.width +'px')
     Selected.after(cascaderBoard)
 }
 
-const mt_delectBoard = () =>{
-    let item = 0
+const mt_delectBoard = (mt_boardNum) =>{
+    let item = mt_boardNum
     while(document.getElementById("mt_cascaderBoard" + item)){
         document.getElementById("mt_cascaderBoard" + item).remove()
         item ++;
@@ -151,7 +207,11 @@ const mt_delectBoard = () =>{
 }
 
 const test = () =>{
-    mt_createBoardItem(boardData.value, 0)
+    if(mt_ISselect.value.length != 0){
+        alert(mt_Node.value)
+    } else {
+        alert("Error")
+    }
 }
 
 </script>
@@ -191,7 +251,7 @@ const test = () =>{
     bottom: 0;
     width: 100%;
     height: 100%;
-    z-index: 999;
+    z-index: 9;
     background: rgba(0,0,0,0);
     visibility: hidden;
 }
@@ -224,6 +284,7 @@ const test = () =>{
     right: 15%;
     top: 20%;
     bottom: 20%;
+    font-weight: bold;
 }
 
 </style>
