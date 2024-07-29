@@ -9,6 +9,7 @@ import mt_btnGroup from './components/mt-btnGroup.vue'
 import { get, post, put, del } from './components/axiosBag'
 import mt_cascader from './components/mt-cascader.vue'
 import mt_button from './components/mt-button.vue'
+import mt_switch from './components/mt-switch.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -64,6 +65,8 @@ const aaa = () =>{
   alert("AAA")
 }
 
+const isSwitch = ref(true)
+
 </script>
 
 <template>
@@ -80,7 +83,9 @@ const aaa = () =>{
     </div> -->
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
-    <mt_button height='50' width='200' type="info" @click="aaa" round>mt_button</mt_button>
+    <!-- <mt_button height='50' width='200' type="info" @click="aaa" round>mt_button</mt_button> -->
+    <mt_switch v-model:isSwitch="isSwitch"/>
+    <button @click="console.log(isSwitch)">test</button>
   </div>
 </template>
 
