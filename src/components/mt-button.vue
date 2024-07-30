@@ -8,6 +8,7 @@
 //   width：按钮宽度，可选值：Number、String，默认为40
 //   type：按钮类型，可选值：default、primary、success、info、warning、danger，默认为default
 //   round：是否为圆形按钮，可选值：true、false。直接在调用时使用round属性，默认为false
+//   plain: 是否为反色按钮，可选值：true、false。直接在调用时使用round属性，默认为false
 //5.组件插槽：
 //   default：按钮内容，默认为空
 //6.组件样式：
@@ -44,6 +45,10 @@ const data = defineProps({
     round:{
         type: Boolean,
         default: false
+    },
+    plain:{
+        type: Boolean,
+        default: false
     }
 })
 
@@ -59,7 +64,8 @@ const test = () =>{
 <template>
     <div>
         <button id="mt_button" 
-            :class = type :style="{'height': height+'px', 'width':width+'px', 'borderRadius': round? height*5 +'px': height*0.25 + 'px'}" :disabled="disable">
+            :class ="plain ? type + 'Plain' : type" :style="{'height': height+'px', 'width':width+'px', 
+                'borderRadius': round? height*5 +'px': height*0.25 + 'px'}" :disabled="disable">
             <span v-if="$slots.default" style="font-weight: bold;">
                 <slot></slot>
             </span>
@@ -134,5 +140,77 @@ const test = () =>{
 
 .danger:hover{
     background-color: #FF9999;
+}
+
+.defaultPlain{
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    transition-duration: 0.4s;
+}
+
+.defaultPlain:Hover{
+    background-color: white;
+    color : #66FFFF;
+}
+
+.primaryPlain{
+    background-color: white;
+    border: 1px solid #0080FF;
+    color: #66B2FF;
+    transition-duration: 0.4s;
+}
+
+.primaryPlain:hover{
+    background-color: #66B2FF;
+    color: white;
+}
+
+.successPlain{
+    background-color: white;
+    border: 1px solid #00CC00;
+    color: #99FF99;
+    transition-duration: 0.4s;
+}
+
+.successPlain:hover{
+    background-color: #99FF99;
+    color: white
+}
+
+.infoPlain{
+    background-color: white;
+    border: 1px solid gray;
+    color: #A0A0A0;
+    transition-duration: 0.4s;
+}
+
+.infoPlain:Hover{
+    background-color: #A0A0A0;
+    color: white
+}
+
+.warningPlain{
+    background-color: white;
+    border: 1px solid #99FF33;
+    color: #CCFF99;
+    transition-duration: 0.4s;
+}
+
+.warningPlain:hover{
+    background-color: #CCFF99;
+    color: white
+}
+
+.dangerPlain{
+    background-color: white;
+    border: 1px solid #FF0000;
+    color: #FF9999;
+    transition-duration: 0.4s;
+}
+
+.dangerPlain:hover{
+    background-color: #FF9999;
+    color: white
 }
 </style>

@@ -83,9 +83,9 @@ const isSwitch = ref(true)
     </div> -->
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
-    <!-- <mt_button height='50' width='200' type="info" @click="aaa" round>mt_button</mt_button> -->
-    <mt_switch v-model:isSwitch="isSwitch"/>
-    <button @click="console.log(isSwitch)">test</button>
+    <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button>
+    <!-- <mt_switch v-model:isSwitch="isSwitch"/>
+    <button @click="console.log(isSwitch)">test</button> -->
   </div>
 </template>
 
