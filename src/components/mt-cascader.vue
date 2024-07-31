@@ -9,13 +9,15 @@
 
 //2024.7.28更新 基本完成 明天写多选
 
+//2024.7.31更新 可以执行基本的多选操作，显示存在bug
 
-import { ref, defineProps, watch, onMounted } from 'vue'
+
+import { ref, defineProps, watch, onMounted, defineModel } from 'vue'
 
 const data = defineProps({
     defaultNode: {
         type:String,
-        default:"Test"
+        default:"Cascader"
     },
     width:{
         type:Number,
@@ -25,6 +27,19 @@ const data = defineProps({
         type:Number,
         default: 50
     },
+    multiple:{
+        type: Boolean,
+        default: false
+    },
+    options: {
+        type: Number,
+        default: 4
+    }
+})
+
+const mt_ccdData = defineModel( "data", {
+    type: Array ,
+    default: [],
 })
 
 const boardData = ref([
@@ -61,6 +76,7 @@ const boardData = ref([
 ])
 
 const mt_Node = ref("")
+const mt_nodeData = ref()
 const mt_colorLock = ref(false)
 const mt_ISselect = ref([])
 const mt_ISselectTemp = ref([])
@@ -116,16 +132,23 @@ const mt_examineData = (item, boardNum) => {
         mt_createBoardItem(item.children, boardNum + 1)
     } else {
         mt_ISselect.value = mt_ISselectTemp.value.slice()
-        let dataLable = ""
-        for(let t = 0; t <= boardNum; t++) {
-            dataLable += mt_ISselect.value[t]
-            if(t != boardNum) dataLable += '/'
-        }
-        if(mt_Node.value == dataLable){
-            mt_Node.value = data.defaultNode
-            mt_ISselect.value.length = 0
+        let dataLable = mt_ISselect.value[boardNum]
+        let dataIndex = mt_ccdData.value.indexOf(dataLable)
+        if( data.multiple ) {
+            if( dataIndex >= 0 ){
+                mt_ccdData.value.splice(dataIndex, 1)
+            } else {
+                mt_ccdData.value.push(dataLable)
+            }
         } else {
+            mt_ccdData.value[0] = dataLable
+        }
+        mt_ccdData.value.sort()
+        dataLable = mt_ccdData.value.join(' / ')
+        if(dataLable !== "") {
             mt_Node.value = dataLable
+        } else {
+            mt_Node.value = data.defaultNode
         }
         mt_delect()
     }
@@ -190,11 +213,14 @@ const mt_createBoard = (oldBoardID, newBoardID, boardNum) =>{
     cascaderBoard.style.position = "absolute"
     cascaderBoard.style.width = data.width +'px' 
     cascaderBoard.style.margin = "2px 0 0 0"
-    cascaderBoard.style.height = "auto";
+    cascaderBoard.style.height = data.height * data.options+'px';
     cascaderBoard.style.borderRadius = "10px";
     cascaderBoard.style.border = "2px solid blue";
     cascaderBoard.style.backgroundColor = "white";
     cascaderBoard.style.left = boardNum * (data.width + 2) +'px'
+    cascaderBoard.style.overflow = "scroll"
+    cascaderBoard.style.overflowX = "hidden"
+    cascaderBoard.style.scrollbarWidth = "none"
     Selected.after(cascaderBoard)
 }
 
@@ -221,12 +247,15 @@ const test = () =>{
     <div id="mt_Masklayer" class="mt_Masklayer" @click="mt_delect"></div>
     <div :style="{width: width+'px',height: height+'px'}">
         <div id="mt_ColorExcMain" class="mt_Cascader" @click="mt_create" @mouseover="mt_colorHigh" @mouseleave="mt_colorLow">
-            <div id="mt_Selected" class="mt_Selected" :style="{height: height*0.6+'px', lineHeight: height*0.6+'px'}">{{mt_Node}}</div>
+            <div id="mt_Selected" class="mt_Selected" :style="{height: height*0.6+'px', lineHeight: height*0.6+'px'}">
+                {{mt_Node}}
+            </div>
             <div id="mt_Arrow" class="mt_RotateArrow" :style="{height: height * 0.3+'px', width: height * 0.3+'px'}">
                 <div id="mt_ColorExcArrow" class="mt_Arrow" :style="{height: height*0.3+'px', width: height*0.3+'px' ,top: '20%'}" />
             </div>
         </div>
     </div>
+    <button @click="console.log(mt_Node)">node</button>
 </template>
 
 <style scoped>

@@ -65,6 +65,8 @@ const aaa = () =>{
   alert("AAA")
 }
 
+const cascaderData = ref([])
+
 const isSwitch = ref(true)
 
 </script>
@@ -78,14 +80,14 @@ const isSwitch = ref(true)
     <div style="position: absolute; left: 20%;">
       <mt_btnGroup :btns="btns" :method="clickBtns" />
     </div> -->
-    <!-- <div style="position: absolute; left: 10%; top: 10%;">
-      <mt_cascader defaultNode="Cascader" />
-    </div> -->
+    <div style="position: absolute; left: 10%; top: 10%;">
+      <mt_cascader defaultNode="Cascader" :data="cascaderData" multiple />
+    </div>
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
-    <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button>
-    <!-- <mt_switch v-model:isSwitch="isSwitch"/>
-    <button @click="console.log(isSwitch)">test</button> -->
+    <!-- <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button> -->
+    <!-- <mt_switch :isSwitch="isSwitch"/> -->
+    <button @click="console.log(cascaderData)">test</button>
   </div>
 </template>
 
