@@ -36,6 +36,39 @@ const selectValue = ref()
 // ])
 // const btns = ref(['按钮1', '按钮2', '按钮3'])
 
+const boardData = ref([
+    {
+        value: "A",
+        label: "Atest",
+    },
+    {
+        value: "B",
+        label: "Btest",
+        children: [
+            {
+                value: "C",
+                label: "Ctest",
+                children:[
+                    {
+                        value: "F",
+                        label: "Ftest"
+                    }   
+                ]
+            }
+        ]
+    },
+    {
+        value: "D",
+        label: "Dtest",
+        children: [
+            {
+                value: "E",
+                label: "Etest",
+            }
+        ]
+    },
+])
+
 // onMounted(() => {
 //   get('/test', {}).then(response => {
 //     thead.value = response.thead
@@ -81,13 +114,13 @@ const isSwitch = ref(true)
       <mt_btnGroup :btns="btns" :method="clickBtns" />
     </div> -->
     <div style="position: absolute; left: 10%; top: 10%;">
-      <mt_cascader defaultNode="Cascader" :data="cascaderData" multiple />
+      <mt_cascader defaultNode="Cascader" :options="boardData" :data="cascaderData" multiple />
+      <button @click="console.log(cascaderData)">test</button>
     </div>
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
     <!-- <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button> -->
     <!-- <mt_switch :isSwitch="isSwitch"/> -->
-    <button @click="console.log(cascaderData)">test</button>
   </div>
 </template>
 

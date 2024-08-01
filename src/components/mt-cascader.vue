@@ -1,15 +1,15 @@
 <script setup>
 
-//编写阶段 级联选择器
-//2024.7.26更新 能够读取DATA数组,生成一个列表。完成了箭头的翻转。
-//          未解决的问题：无法读取className
-
-//2024.7.27更新 不用className了，单独封装了函数
-//          点击选择器会直接展开DATA数组
-
-//2024.7.28更新 基本完成 明天写多选
-
-//2024.7.31更新 可以执行基本的多选操作，显示存在bug
+//1.组件名称：mt-cascader
+//2.组件功能：级联选择器
+//3.组件参数：
+//   defaultNode: String, 选择为空时显示的节点名称, 默认为Cascader
+//   width: Number, 组件宽度, 默认为200
+//   height: Number, 组件高度, 默认为50
+//   multiple: Boolean, 是否支持多选, 默认为false
+//   display: Number, 显示的节点数量, 默认为4
+//   options: Array, 节点数据, 默认为空
+//   双向绑定参数：data: Array, 返回选中的节点数据
 
 
 import { ref, defineProps, watch, onMounted, defineModel } from 'vue'
@@ -31,62 +31,36 @@ const data = defineProps({
         type: Boolean,
         default: false
     },
-    options: {
+    display: {
         type: Number,
         default: 4
+    },
+    options: {
+        type: Array,
+        default: []
     }
 })
 
-const mt_ccdData = defineModel( "data", {
+const mt_backData = defineModel( "data", {
     type: Array ,
     default: [],
 })
 
-const boardData = ref([
-    {
-        value: "A",
-        label: "Atest",
-    },
-    {
-        value: "B",
-        label: "Btest",
-        children: [
-            {
-                value: "C",
-                label: "Ctest",
-                children:[
-                    {
-                        value: "F",
-                        label: "Ftest"
-                    }   
-                ]
-            }
-        ]
-    },
-    {
-        value: "D",
-        label: "Dtest",
-        children: [
-            {
-                value: "E",
-                label: "Etest",
-            }
-        ]
-    },
-])
-
 const mt_Node = ref("")
-const mt_nodeData = ref()
 const mt_colorLock = ref(false)
+const mt_showData =ref([])
 const mt_ISselect = ref([])
 const mt_ISselectTemp = ref([])
 
 onMounted(()=>{
     mt_Node.value = data.defaultNode
+    if(mt_Node.value.length > 15) {
+            mt_Node.value = mt_Node.value.slice(0,15) + '...'
+        }
 })
 
 const mt_create = () =>{
-    mt_createBoardItem(boardData.value, 0)
+    mt_createBoardItem(data.options, 0)
     mt_createMask()
 }
 
@@ -124,6 +98,17 @@ const mt_colorLow = () =>{
     }
 }
 
+const mt_findData = (item) =>{
+    for(let i = 0; i < mt_ISselect.value.length; i++) {
+        for(let t = 0; t < mt_ISselect.value[i].length; t++) {
+            if (mt_ISselect.value[i][t] === item.label) {
+                return true
+            }
+        }
+    }
+    return false
+}
+
 const mt_examineData = (item, boardNum) => {
     mt_ISselectTemp.value[boardNum] = item.label
     mt_ISselectTemp.value.length = boardNum + 1
@@ -131,24 +116,35 @@ const mt_examineData = (item, boardNum) => {
         mt_delectBoard(boardNum + 1)
         mt_createBoardItem(item.children, boardNum + 1)
     } else {
-        mt_ISselect.value = mt_ISselectTemp.value.slice()
-        let dataLable = mt_ISselect.value[boardNum]
-        let dataIndex = mt_ccdData.value.indexOf(dataLable)
-        if( data.multiple ) {
-            if( dataIndex >= 0 ){
-                mt_ccdData.value.splice(dataIndex, 1)
-            } else {
-                mt_ccdData.value.push(dataLable)
+        let mt_index = 0
+        if(mt_ISselect.value.length != 0) {
+            let flag = true
+            for(let i = 0; i< mt_ISselect.value.length; i++) {
+                if(mt_ISselectTemp.value.toString() === mt_ISselect.value[i].toString()) {
+                    mt_ISselect.value.splice(i, 1)
+                    mt_showData.value.splice(i, 1)
+                    mt_backData.value.splice(i, 1)
+                    flag = false
+                    break
+                }
+            } if(flag) {
+                mt_ISselect.value.push(mt_ISselectTemp.value.slice())
+                mt_showData.value.push(item.label)
+                mt_backData.value.push(item.value)
             }
         } else {
-            mt_ccdData.value[0] = dataLable
+            mt_ISselect.value.push(mt_ISselectTemp.value.slice())
+            mt_showData.value.push(item.label)
+            mt_backData.value.push(item.value)
         }
-        mt_ccdData.value.sort()
-        dataLable = mt_ccdData.value.join(' / ')
+        let dataLable = mt_showData.value.join(' / ')
         if(dataLable !== "") {
             mt_Node.value = dataLable
         } else {
             mt_Node.value = data.defaultNode
+        }
+        if(mt_Node.value.length > 15) {
+            mt_Node.value = mt_Node.value.slice(0,15) + '...'
         }
         mt_delect()
     }
@@ -165,7 +161,7 @@ const mt_createBoardSingle = (item, boardNum) =>{
     mt_div.style.fontSize = data.height * 0.3 + 'px'
     mt_div.style.fontWeight = 'bold'
     mt_div.innerHTML = item.label
-    if(item.label == mt_ISselect.value[boardNum]) {
+    if(mt_findData(item)) {
         mt_div.style.color = "blue"
     }
     mt_div.style.position = "relative";
@@ -198,9 +194,6 @@ const mt_createBoardItem = (cascaderData, boardNum) =>{
     mt_createBoard("mt_ColorExcMain", newBoardID, boardNum)
     for(let item in cascaderData){
         mt_createBoardSingle(cascaderData[item], boardNum)
-        // if(cascaderData[item].children){
-        //     mt_createBoardItem(cascaderData[item].children, boardNum + 1)
-        // }
     }
 }
 
@@ -213,7 +206,7 @@ const mt_createBoard = (oldBoardID, newBoardID, boardNum) =>{
     cascaderBoard.style.position = "absolute"
     cascaderBoard.style.width = data.width +'px' 
     cascaderBoard.style.margin = "2px 0 0 0"
-    cascaderBoard.style.height = data.height * data.options+'px';
+    cascaderBoard.style.height = data.height * data.display+'px';
     cascaderBoard.style.borderRadius = "10px";
     cascaderBoard.style.border = "2px solid blue";
     cascaderBoard.style.backgroundColor = "white";
@@ -232,18 +225,9 @@ const mt_delectBoard = (mt_boardNum) =>{
     }
 }
 
-const test = () =>{
-    if(mt_ISselect.value.length != 0){
-        alert(mt_Node.value)
-    } else {
-        alert("Error")
-    }
-}
-
 </script>
 
 <template>
-    <button @click="test">test</button>
     <div id="mt_Masklayer" class="mt_Masklayer" @click="mt_delect"></div>
     <div :style="{width: width+'px',height: height+'px'}">
         <div id="mt_ColorExcMain" class="mt_Cascader" @click="mt_create" @mouseover="mt_colorHigh" @mouseleave="mt_colorLow">
@@ -255,7 +239,6 @@ const test = () =>{
             </div>
         </div>
     </div>
-    <button @click="console.log(mt_Node)">node</button>
 </template>
 
 <style scoped>
