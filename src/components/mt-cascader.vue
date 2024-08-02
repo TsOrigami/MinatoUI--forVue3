@@ -14,7 +14,7 @@
 
 import { ref, defineProps, watch, onMounted, defineModel } from 'vue'
 
-const data = defineProps({
+const mt_data = defineProps({
     defaultNode: {
         type:String,
         default:"Cascader"
@@ -53,21 +53,21 @@ const mt_ISselect = ref([])
 const mt_ISselectTemp = ref([])
 
 onMounted(()=>{
-    mt_Node.value = data.defaultNode
+    mt_Node.value = mt_data.defaultNode
     if(mt_Node.value.length > 15) {
             mt_Node.value = mt_Node.value.slice(0,15) + '...'
         }
 })
 
 const mt_create = () =>{
-    mt_createBoardItem(data.options, 0)
+    mt_createBoardItem(mt_data.options, 0)
     mt_createMask()
 }
 
 const mt_delect = () =>{
     mt_delectMask()
     mt_delectBoard(0)
-    if(mt_Node.value == data.defaultNode){
+    if(mt_Node.value == mt_data.defaultNode){
         mt_ISselect.value = []
     }
 }
@@ -141,7 +141,7 @@ const mt_examineData = (item, boardNum) => {
         if(dataLable !== "") {
             mt_Node.value = dataLable
         } else {
-            mt_Node.value = data.defaultNode
+            mt_Node.value = mt_data.defaultNode
         }
         if(mt_Node.value.length > 15) {
             mt_Node.value = mt_Node.value.slice(0,15) + '...'
@@ -155,10 +155,10 @@ const mt_createBoardSingle = (item, boardNum) =>{
     const mt_div = document.createElement('div');
     mt_div.id = item.value
     mt_div.style.zIndex = '11'
-    mt_div.style.width = data.width - 15 + 'px';
-    mt_div.style.height = data.height + 'px';
-    mt_div.style.lineHeight = data.height + 'px';
-    mt_div.style.fontSize = data.height * 0.3 + 'px'
+    mt_div.style.width = mt_data.width - 15 + 'px';
+    mt_div.style.height = mt_data.height + 'px';
+    mt_div.style.lineHeight = mt_data.height + 'px';
+    mt_div.style.fontSize = mt_data.height * 0.3 + 'px'
     mt_div.style.fontWeight = 'bold'
     mt_div.innerHTML = item.label
     if(mt_findData(item)) {
@@ -170,8 +170,8 @@ const mt_createBoardSingle = (item, boardNum) =>{
     if(item.children){
         const mt_arrowSmall = document.createElement('div');
         mt_arrowSmall.style.position = "absolute"
-        mt_arrowSmall.style.width = data.height * 0.2 +'px'
-        mt_arrowSmall.style.height = data.height * 0.2 +'px'
+        mt_arrowSmall.style.width = mt_data.height * 0.2 +'px'
+        mt_arrowSmall.style.height = mt_data.height * 0.2 +'px'
         mt_arrowSmall.style.top = "37.5%"
         mt_arrowSmall.style.right = "5%"
         mt_arrowSmall.style.display = 'inline-block'
@@ -204,13 +204,13 @@ const mt_createBoard = (oldBoardID, newBoardID, boardNum) =>{
     cascaderBoard.id = newBoardID
     cascaderBoard.style.zIndex = '10'
     cascaderBoard.style.position = "absolute"
-    cascaderBoard.style.width = data.width +'px' 
+    cascaderBoard.style.width = mt_data.width +'px' 
     cascaderBoard.style.margin = "2px 0 0 0"
-    cascaderBoard.style.height = data.height * data.display+'px';
+    cascaderBoard.style.height = mt_data.height * mt_data.display+'px';
     cascaderBoard.style.borderRadius = "10px";
     cascaderBoard.style.border = "2px solid blue";
     cascaderBoard.style.backgroundColor = "white";
-    cascaderBoard.style.left = boardNum * (data.width + 2) +'px'
+    cascaderBoard.style.left = boardNum * (mt_data.width + 2) +'px'
     cascaderBoard.style.overflow = "scroll"
     cascaderBoard.style.overflowX = "hidden"
     cascaderBoard.style.scrollbarWidth = "none"

@@ -10,6 +10,7 @@ import { get, post, put, del } from './components/axiosBag'
 import mt_cascader from './components/mt-cascader.vue'
 import mt_button from './components/mt-button.vue'
 import mt_switch from './components/mt-switch.vue'
+import mt_autocomplete from './components/autocomplete.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -80,10 +81,6 @@ const boardData = ref([
 //   });
 // })
 
-// const test = () => {
-//   console.log(selectValue.value.getSelect())
-// }
-
 // const clickBtns = (index) => {
 //   console.log(index)
 // }
@@ -94,13 +91,24 @@ const boardData = ref([
 //   })
 // }
 
-const aaa = () =>{
-  alert("AAA")
-}
+// const aaa = () =>{
+//   alert("AAA")
+// }
 
 const cascaderData = ref([])
 
-const isSwitch = ref(true)
+// const isSwitch = ref(true)
+
+const autoOptions = ref([
+  'temp', 'accept', 'time', 'manba','a','aa','aaa','aaaa','aaaaa','aaaaaa'
+])
+
+const message = ref('test')
+
+const test = () => {
+  if(message.value == "") console.log("fail")
+  console.log(message.value)
+}
 
 </script>
 
@@ -121,6 +129,10 @@ const isSwitch = ref(true)
     <button @click="postTest">Post</button> -->
     <!-- <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button> -->
     <!-- <mt_switch :isSwitch="isSwitch"/> -->
+     <div style="position: absolute; left: 10%; top: 30%;">
+      <mt_autocomplete :options="autoOptions" v-model="message"  />
+      <button @click="test">Test</button>
+     </div>
   </div>
 </template>
 
