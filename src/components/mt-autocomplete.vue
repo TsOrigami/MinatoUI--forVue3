@@ -46,7 +46,6 @@ const updateMessage = (event) => {
 };
 
 const mt_autocomple_createAutoComplete = () =>{
-    mt_autocomple_autoCompleteShow()
     if(document.getElementById('mt_autocomple_autoCompleteBoard')) {
         document.getElementById('mt_autocomple_autoCompleteBoard').remove()
     }
@@ -100,29 +99,46 @@ const mt_autocomple_createCompleteData = (inputed) =>{
     element.appendChild(mt_autocomple_div)
     mt_autocomple_div.onclick = function(){
         mt_autocomple_messages.value = inputed
-        mt_autocomple_autoCompleteDelect()
     }
 }
 
 const mt_autocomple_autoCompleteDelect = () =>{
-    document.getElementById('mt_autocomple_Masklayer').style.visibility = "hidden"
     if(document.getElementById('mt_autocomple_autoCompleteBoard')) {
         document.getElementById('mt_autocomple_autoCompleteBoard').remove()
     }
 }
 
-const mt_autocomple_autoCompleteShow = () =>{
-    document.getElementById('mt_autocomple_Masklayer').style.visibility = "visible"
+const vClickOutside = {
+    mounted(mt, binding) {
+        function eventHandler(e) {
+            if (mt.contains(e.target)) {
+                return false
+            }
+            // 如果绑定的参数是函数，正常情况也应该是函数，执行
+            if (binding.value && typeof binding.value === 'function') {
+                binding.value(e)
+            }
+        }
+        // 用于销毁前注销事件监听
+        mt.__click_outside__ = eventHandler
+        // 添加事件监听
+        document.addEventListener('click', eventHandler)
+    },
+    beforeUnmount(mt) {
+        // 移除事件监听
+        document.removeEventListener('click', mt.__click_outside__)
+        // 删除无用属性
+        delete mt.__click_outside__
+    }
 }
-
 
 </script>
 
 <template>
     <div>
-        <div id="mt_autocomple_Masklayer" class="mt_autocomple_Masklayer" @click="mt_autocomple_autoCompleteDelect"></div>
-        <input id="mt_autocomple_input" class="mt_autocomple_input" :value="mt_autocomple_messages" type="text" autocomplete="off" @input="updateMessage" 
-        :style="{height: height+'px', width: width+'px', borderRadius: height*0.25+'px'}" />
+        <input id="mt_autocomple_input" class="mt_autocomple_input" :value="mt_autocomple_messages" type="text" autocomplete="off" 
+        @input="updateMessage" @click="updateMessage" v-click-outside="mt_autocomple_autoCompleteDelect" 
+        :style="{height: height+'px', width: width+'px', borderRadius: height*0.25+'px', textIndent: height*0.25+'px'}" />
     </div>
 </template>
 
@@ -134,18 +150,6 @@ const mt_autocomple_autoCompleteShow = () =>{
     width: 10;
 }
 
-.mt_autocomple_Masklayer{
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 9;
-    background: rgba(0,0,0,0);
-    visibility: hidden;
-}
 
 .mt_autocomple_input{
     border: 2px solid skyblue;

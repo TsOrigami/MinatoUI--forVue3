@@ -51,6 +51,7 @@ const mt_cascader_colorLock = ref(false)
 const mt_cascader_showData =ref([])
 const mt_cascader_ISselect = ref([])
 const mt_cascader_ISselectTemp = ref([])
+const mt_cascader_flag = ref(true)
 
 onMounted(()=>{
     mt_cascader_Node.value = mt_cascader_data.defaultNode
@@ -65,24 +66,26 @@ const mt_cascader_create = () =>{
 }
 
 const mt_cascader_delect = () =>{
-    mt_cascader_delectMask()
-    mt_cascader_delectBoard(0)
-    if(mt_cascader_Node.value == mt_cascader_data.defaultNode){
-        mt_cascader_ISselect.value = []
+    if(mt_cascader_flag.value){
+        mt_cascader_delectMask()
+        mt_cascader_delectBoard(0)
+        if(mt_cascader_Node.value == mt_cascader_data.defaultNode){
+            mt_cascader_ISselect.value = []
+        }
+    } else {
+        mt_cascader_flag.value = true
     }
 }
 
 const mt_cascader_createMask = () =>{
     mt_cascader_colorLock.value = true
     mt_cascader_colorHigh()
-    document.getElementById("mt_cascader_Masklayer").style.visibility = "visible"
     document.getElementById('mt_cascader_Arrow').style.transform = 'rotate(180deg)';
 }
 
 const mt_cascader_delectMask = () =>{
     mt_cascader_colorLock.value = false
     mt_cascader_colorLow()
-    document.getElementById("mt_cascader_Masklayer").style.visibility = "hidden"
     document.getElementById('mt_cascader_Arrow').style.transform = 'rotate(0deg)'
 }
 
@@ -116,7 +119,6 @@ const mt_cascader_examineData = (item, boardNum) => {
         mt_cascader_delectBoard(boardNum + 1)
         mt_cascader_createBoardItem(item.children, boardNum + 1)
     } else {
-        let mt_cascader_index = 0
         if(mt_cascader_ISselect.value.length != 0) {
             let flag = true
             for(let i = 0; i< mt_cascader_ISselect.value.length; i++) {
@@ -215,6 +217,9 @@ const mt_cascader_createBoard = (oldBoardID, newBoardID, boardNum) =>{
     cascaderBoard.style.overflowX = "hidden"
     cascaderBoard.style.scrollbarWidth = "none"
     Selected.after(cascaderBoard)
+    cascaderBoard.onclick = function(){
+        mt_cascader_flag.value = false
+    }
 }
 
 const mt_cascader_delectBoard = (mt_cascader_boardNum) =>{
@@ -225,12 +230,36 @@ const mt_cascader_delectBoard = (mt_cascader_boardNum) =>{
     }
 }
 
+const vClickOutside = {
+    mounted(mt, binding) {
+        function eventHandler(e) {
+            if (mt.contains(e.target)) {
+                return false
+            }
+            // 如果绑定的参数是函数，正常情况也应该是函数，执行
+            if (binding.value && typeof binding.value === 'function') {
+                binding.value(e)
+            }
+        }
+        // 用于销毁前注销事件监听
+        mt.__click_outside__ = eventHandler
+        // 添加事件监听
+        document.addEventListener('click', eventHandler)
+    },
+    beforeUnmount(mt) {
+        // 移除事件监听
+        document.removeEventListener('click', mt.__click_outside__)
+        // 删除无用属性
+        delete mt.__click_outside__
+    }
+}
+
 </script>
 
 <template>
-    <div id="mt_cascader_Masklayer" class="mt_cascader_Masklayer" @click="mt_cascader_delect"></div>
     <div :style="{width: width+'px',height: height+'px'}">
-        <div id="mt_cascader_ColorExcMain" class="mt_cascader_Cascader" @click="mt_cascader_create" @mouseover="mt_cascader_colorHigh" @mouseleave="mt_cascader_colorLow">
+        <div id="mt_cascader_ColorExcMain" class="mt_cascader_Cascader" @click="mt_cascader_create" 
+        @mouseover="mt_cascader_colorHigh" @mouseleave="mt_cascader_colorLow" v-click-outside="mt_cascader_delect">
             <div id="mt_cascader_Selected" class="mt_cascader_Selected" :style="{height: height*0.6+'px', lineHeight: height*0.6+'px'}">
                 {{mt_cascader_Node}}
             </div>

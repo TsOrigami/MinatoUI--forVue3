@@ -10,7 +10,7 @@ import { get, post, put, del } from './components/axiosBag'
 import mt_cascader from './components/mt-cascader.vue'
 import mt_button from './components/mt-button.vue'
 import mt_switch from './components/mt-switch.vue'
-import mt_autocomplete from './components/autocomplete.vue'
+import mt_autocomplete from './components/mt-autocomplete.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -37,38 +37,38 @@ const options = ref([
 ])
 // const btns = ref(['按钮1', '按钮2', '按钮3'])
 
-// const boardData = ref([
-//     {
-//         value: "A",
-//         label: "Atest",
-//     },
-//     {
-//         value: "B",
-//         label: "Btest",
-//         children: [
-//             {
-//                 value: "C",
-//                 label: "Ctest",
-//                 children:[
-//                     {
-//                         value: "F",
-//                         label: "Ftest"
-//                     }   
-//                 ]
-//             }
-//         ]
-//     },
-//     {
-//         value: "D",
-//         label: "Dtest",
-//         children: [
-//             {
-//                 value: "E",
-//                 label: "Etest",
-//             }
-//         ]
-//     },
-// ])
+const boardData = ref([
+    {
+        value: "A",
+        label: "Atest",
+    },
+    {
+        value: "B",
+        label: "Btest",
+        children: [
+            {
+                value: "C",
+                label: "Ctest",
+                children:[
+                    {
+                        value: "F",
+                        label: "Ftest"
+                    }   
+                ]
+            }
+        ]
+    },
+    {
+        value: "D",
+        label: "Dtest",
+        children: [
+            {
+                value: "E",
+                label: "Etest",
+            }
+        ]
+    },
+])
 
 // onMounted(() => {
 //   get('/test', {}).then(response => {
@@ -95,15 +95,16 @@ const options = ref([
 //   alert("AAA")
 // }
 
-// const cascaderData = ref([])
+const cascaderData = ref([])
 
 // const isSwitch = ref(true)
 
-// const autoOptions = ref([
-//   'temp', 'accept', 'time', 'manba','a','aa','aaa','aaaa','aaaaa','aaaaaa'
-// ])
+const autoOptions = ref([
+  // 'temp', 'accept', 'time', 'manba','a','aa','aaa','aaaa','aaaaa','aaaaaa'
+  'temp', 'accept', 'time', 'manba'
+])
 
-// const message = ref('test')
+const message = ref('test')
 
 // const test = () => {
 //   console.log(message.value)
@@ -117,25 +118,25 @@ const options = ref([
     <!-- <div style="position: absolute; left: 20%;">
       <mt_table :thead="thead" :tbody="tbody" :width="400" :height="200" />
     </div> -->
-    <div>
+    <!-- <div>
       <mt_select v-model="selectValue" :options="options" />
       <button @click="console.log(selectValue)">Test</button>
-    </div>
+    </div> -->
     <!-- <div style="position: absolute; left: 20%;">
       <mt_btnGroup :btns="btns" :method="clickBtns" />
     </div> -->
-    <!-- <div style="position: absolute; left: 10%; top: 10%;">
+    <div style="position: absolute; left: 10%; top: 10%;">
       <mt_cascader defaultNode="Cascader" :options="boardData" :data="cascaderData" multiple />
       <button @click="console.log(cascaderData)">test</button>
-    </div> -->
+    </div>
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
     <!-- <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button> -->
     <!-- <mt_switch :isSwitch="isSwitch"/> -->
-     <!-- <div style="position: absolute; left: 10%; top: 30%;">
-      <mt_autocomplete :options="autoOptions" v-model="message"  />
-      <button @click="test">Test</button>
-     </div> -->
+     <div style="position: absolute; left: 10%; top: 40%;">
+        <mt_autocomplete :options="autoOptions" v-model="message"  />
+      <button @click="console.log(message)">Test</button>
+     </div>
   </div>
 </template>
 
