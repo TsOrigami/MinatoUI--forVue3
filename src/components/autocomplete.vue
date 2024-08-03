@@ -1,11 +1,22 @@
 <script setup>
 
-//2024.2.8 没写完 message的更新会慢一步
+//1.组件名称：mt-autocomplete
+//2.组件功能：自动补全输入框
+//3.组件参数：
+//          options：Array, 自动补全的内容， 默认为空
+//          height：Number, 输入框的高度， 默认为40
+//          width：Number, 输入框的宽度， 默认为200
+//          display：Number, 显示的条数， 默认为5
+//          双向绑定参数: v-model：String, 输入框的值，默认为空
+//4.组件使用：
+//          匹配含有该子字符串的选项
+//          <mt-autocomplete :options="options" :height="height" :width="width" :display="display" ></mt-autocomplete>
+
 
 import {ref, defineProps, defineModel, onMounted, watch} from 'vue'
 
 
-const mt_data = defineProps({
+const mt_autocomple_data = defineProps({
     options: {
         type: Array,
         default: []
@@ -24,32 +35,29 @@ const mt_data = defineProps({
     }
 })
 
-const message = defineModel({
+const mt_autocomple_messages = defineModel({
     type: String ,
     default: '',
 })
 
-
-
 const updateMessage = (event) => {
-    message.value = event.target.value;
-    message.value = message.value
-    mt_createCompleteItem(message.value)
+    mt_autocomple_messages.value = event.target.value; 
+    mt_autocomple_createCompleteItem(event.target.value)
 };
 
-const mt_createAutoComplete = () =>{
-    mt_autoCompleteShow()
-    if(document.getElementById('mt_autoCompleteBoard')) {
-        document.getElementById('mt_autoCompleteBoard').remove()
+const mt_autocomple_createAutoComplete = () =>{
+    mt_autocomple_autoCompleteShow()
+    if(document.getElementById('mt_autocomple_autoCompleteBoard')) {
+        document.getElementById('mt_autocomple_autoCompleteBoard').remove()
     }
-    let element = document.getElementById("mt_autocomplete")
+    let element = document.getElementById("mt_autocomple_input")
     let board = document.createElement('div')
-    board.id = "mt_autoCompleteBoard"
+    board.id = "mt_autocomple_autoCompleteBoard"
     board.style.zIndex = '10'
     board.style.position = "absolute"
-    board.style.width = mt_data.width +'px' 
+    board.style.width = mt_autocomple_data.width +'px'
     board.style.margin = "2px 0 0 0"
-    board.style.height = mt_data.height * mt_data.display+'px';
+    board.style.height = mt_autocomple_data.height * mt_autocomple_data.display+'px';
     board.style.borderRadius = "10px";
     board.style.border = "2px solid blue";
     board.style.backgroundColor = "white";
@@ -60,51 +68,51 @@ const mt_createAutoComplete = () =>{
     element.after(board)
 }
 
-const mt_createCompleteItem = (inputed) =>{
+const mt_autocomple_createCompleteItem = (inputed) =>{
     let flag = true
-    for(let i of mt_data.options) {
+    for(let i of mt_autocomple_data.options) {
         if((i.toLowerCase()).includes(inputed.toLowerCase())){
             if(flag) {
-                mt_createAutoComplete()
+                mt_autocomple_createAutoComplete()
                 flag = false
             }
-            mt_createCompleteData(i)
+            mt_autocomple_createCompleteData(i)
         }
     }
     if(flag) {
-        mt_autoCompleteDelect()
+        mt_autocomple_autoCompleteDelect()
     }
 }
 
-const mt_createCompleteData = (inputed) =>{
-    const element = document.getElementById('mt_autoCompleteBoard')
-    const mt_div = document.createElement('div');
-    mt_div.id = inputed
-    mt_div.style.zIndex = '11'
-    mt_div.style.width = mt_data.width - 15 + 'px';
-    mt_div.style.height = mt_data.height + 'px';
-    mt_div.style.lineHeight = mt_data.height + 'px';
-    mt_div.style.fontSize = mt_data.height * 0.3 + 'px'
-    mt_div.style.fontWeight = 'bold'
-    mt_div.innerHTML = inputed
-    mt_div.style.position = "relative";
-    mt_div.style.left= "5px";
-    element.appendChild(mt_div)
-    mt_div.onclick = function(){
-        message.value = inputed
-        mt_autoCompleteDelect()
+const mt_autocomple_createCompleteData = (inputed) =>{
+    const element = document.getElementById('mt_autocomple_autoCompleteBoard')
+    const mt_autocomple_div = document.createElement('div');
+    mt_autocomple_div.id = inputed
+    mt_autocomple_div.style.zIndex = '11'
+    mt_autocomple_div.style.width = mt_autocomple_data.width - 15 + 'px';
+    mt_autocomple_div.style.height = mt_autocomple_data.height + 'px';
+    mt_autocomple_div.style.lineHeight = mt_autocomple_data.height + 'px';
+    mt_autocomple_div.style.fontSize = mt_autocomple_data.height * 0.3 + 'px'
+    mt_autocomple_div.style.fontWeight = 'bold'
+    mt_autocomple_div.innerHTML = inputed
+    mt_autocomple_div.style.position = "relative";
+    mt_autocomple_div.style.left= "5px";
+    element.appendChild(mt_autocomple_div)
+    mt_autocomple_div.onclick = function(){
+        mt_autocomple_messages.value = inputed
+        mt_autocomple_autoCompleteDelect()
     }
 }
 
-const mt_autoCompleteDelect = () =>{
-    document.getElementById('mt_Masklayer').style.visibility = "hidden"
-    if(document.getElementById('mt_autoCompleteBoard')) {
-        document.getElementById('mt_autoCompleteBoard').remove()
+const mt_autocomple_autoCompleteDelect = () =>{
+    document.getElementById('mt_autocomple_Masklayer').style.visibility = "hidden"
+    if(document.getElementById('mt_autocomple_autoCompleteBoard')) {
+        document.getElementById('mt_autocomple_autoCompleteBoard').remove()
     }
 }
 
-const mt_autoCompleteShow = () =>{
-    document.getElementById('mt_Masklayer').style.visibility = "visible"
+const mt_autocomple_autoCompleteShow = () =>{
+    document.getElementById('mt_autocomple_Masklayer').style.visibility = "visible"
 }
 
 
@@ -112,22 +120,21 @@ const mt_autoCompleteShow = () =>{
 
 <template>
     <div>
-        <div id="mt_Masklayer" class="mt_Masklayer" @click="mt_autoCompleteDelect"></div>
-        <input id="mt_autocomplete" :value="message" type="text" autocomplete="off" @input="updateMessage" 
-        :style="{height: height+'px', width: width+'px'}" />
-        <button @click="message += 1">Num++</button>
+        <div id="mt_autocomple_Masklayer" class="mt_autocomple_Masklayer" @click="mt_autocomple_autoCompleteDelect"></div>
+        <input id="mt_autocomple_input" class="mt_autocomple_input" :value="mt_autocomple_messages" type="text" autocomplete="off" @input="updateMessage" 
+        :style="{height: height+'px', width: width+'px', borderRadius: height*0.25+'px'}" />
     </div>
 </template>
 
 <style scoped>
 
-.mt_searchData{
+.mt_autocomple_searchData{
     position: absolute;
     left: 0;
     width: 10;
 }
 
-.mt_Masklayer{
+.mt_autocomple_Masklayer{
     position: fixed;
     left: 0;
     right: 0;
@@ -138,6 +145,16 @@ const mt_autoCompleteShow = () =>{
     z-index: 9;
     background: rgba(0,0,0,0);
     visibility: hidden;
+}
+
+.mt_autocomple_input{
+    border: 2px solid skyblue;
+    transition-duration: 0.3s;
+    outline: none;
+}
+
+.mt_autocomple_input:focus{
+    border: 2px solid blue;
 }
 
 </style>

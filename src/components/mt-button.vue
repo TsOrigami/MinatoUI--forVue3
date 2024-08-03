@@ -52,25 +52,17 @@ const data = defineProps({
     }
 })
 
-const test = () =>{
-    console.log(document.getElementById("mt_button").offsetHeight)
-    console.log(document.getElementById("mt_button").offsetWidth)
-    console.log(data.height)
-    console.log(data.width)
-}
-
 </script>
 
 <template>
     <div>
-        <button id="mt_button" 
+        <button id="mt_button_Button" 
             :class ="plain ? type + 'Plain' : type" :style="{'height': height+'px', 'width':width+'px', 
                 'borderRadius': round? height*5 +'px': height*0.25 + 'px'}" :disabled="disable">
             <span v-if="$slots.default" style="font-weight: bold;">
                 <slot></slot>
             </span>
         </button>
-        <button @click="test">test</button>
     </div>
 </template>
 

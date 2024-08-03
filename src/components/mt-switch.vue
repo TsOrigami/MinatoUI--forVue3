@@ -55,17 +55,17 @@ const swtichState = () =>{
 
 <template>
     <div>
-        <div id="mt_switch" 
+        <div id="mt_switch_switch" 
             :style="{height: height +'px', width: width +'px', backgroundColor: color, borderRadius: height/2 + 'px',}"
             style="border: 2px solid black;"
             @click="swtichState">
-            <div id="mt_switchBall" 
+            <div id="mt_switch_switchBall" 
                 :style="{'height': height*0.8 +'px', 'width': height*0.8 +'px','top': height*0.1+'px', 
                     'borderRadius': height*0.9 /2 + 'px', 'backgroundColor': ballColor,
                     'left':model? width-height+3+'px' : '3px'}"
                 style="border: 1px solid black; position: absolute;transition-duration: 0.5s">
             </div>
-            <div id="mt_switchBack"
+            <div id="mt_switch_switchBack"
                 :style="{'height': height-4 +'px', 'backgroundColor': colorOn, 'borderRadius': height/2 + 'px',
                      width: model? width-4 +'px': height-3 +'px'}"
                 style="transition-duration: 0.5s">

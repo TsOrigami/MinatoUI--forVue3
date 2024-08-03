@@ -54,7 +54,7 @@ const data = defineProps({
 // 监听tbody的变化，当tbody发生变化时，移动滚动条到最底部
 watch(() => data.tbody, () => {
     setTimeout(() => {
-        const tbodyDiv = document.getElementById('tbodyDiv')
+        const tbodyDiv = document.getElementById('mt_table_tbodyDiv')
         tbodyDiv.scrollTop = tbodyDiv.scrollHeight
     }, 100)
 }, {
@@ -79,7 +79,7 @@ watch(() => data.tbody, () => {
                 </thead>
             </table>
         </div>
-        <div id="tbodyDiv"
+        <div id="mt_table_tbodyDiv"
             :style="{ height: (height - 20) + 'px', overflowY: 'scroll', overflowX: 'hidden', backgroundColor: Color, width: width + 'px' }">
             <table>
                 <tbody>

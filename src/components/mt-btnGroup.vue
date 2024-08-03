@@ -68,7 +68,7 @@ const data = defineProps({
 </script>
 
 <template>
-    <div class="mt-btnGroup" style="position: relative; border-style: solid; border-width: 2px; border-radius: 10px; padding: 5px; 
+    <div style="position: relative; border-style: solid; border-width: 2px; border-radius: 10px; padding: 5px; 
             display: flex; justify-content: space-between;"
         :style="{ width: width + 'px', height: height + 'px', backgroundColor: color, borderColor: borderColor }">
         <button v-for="(item, index) in btns" style="border-radius: 10px;z-index: 2; "
