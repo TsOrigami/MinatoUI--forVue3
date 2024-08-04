@@ -118,25 +118,25 @@ const message = ref('test')
     <!-- <div style="position: absolute; left: 20%;">
       <mt_table :thead="thead" :tbody="tbody" :width="400" :height="200" />
     </div> -->
-    <!-- <div>
+    <div>
       <mt_select v-model="selectValue" :options="options" />
       <button @click="console.log(selectValue)">Test</button>
-    </div> -->
+    </div>
     <!-- <div style="position: absolute; left: 20%;">
       <mt_btnGroup :btns="btns" :method="clickBtns" />
     </div> -->
-    <div style="position: absolute; left: 10%; top: 10%;">
+    <!-- <div style="position: absolute; left: 10%; top: 10%;">
       <mt_cascader defaultNode="Cascader" :options="boardData" :data="cascaderData" multiple />
       <button @click="console.log(cascaderData)">test</button>
-    </div>
+    </div> -->
     <!-- <button @click="test">Test</button>
     <button @click="postTest">Post</button> -->
     <!-- <mt_button height='50' width='200' type="success" @click="aaa" round plain>mt_button</mt_button> -->
     <!-- <mt_switch :isSwitch="isSwitch"/> -->
-     <div style="position: absolute; left: 10%; top: 40%;">
+     <!-- <div style="position: absolute; left: 10%; top: 40%;">
         <mt_autocomplete :options="autoOptions" v-model="message"  />
       <button @click="console.log(message)">Test</button>
-     </div>
+     </div> -->
   </div>
 </template>
 
