@@ -3,12 +3,20 @@
 //1.组件名称：mt-select
 //2.组件功能：选择器
 //3.组件参数：
-//          options: Array, 选项数组, 每个元素包含lable和value两个属性, 默认为空
-//          width: Number, 宽度, 默认为200
-//          height: Number, 高度, 默认为60
-//          display: Number, 显示的选项数量, 默认为5
-//          alt: String, 默认显示文字, 默认为"Select"
-//          双向绑定参数: v-model, String/Number, 返回选中的选项value属性
+//          可选项: default: Boolen, 普通选择器, 默认为True
+//              options: Array, 选项数组, 每个元素包含lable和value两个属性, 默认为空
+//              width: Number, 宽度, 默认为200
+//              height: Number, 高度, 默认为60
+//              display: Number, 显示的选项数量, 默认为5
+//              alt: String, 默认显示文字, 默认为"Select"
+//              双向绑定参数: v-model, String/Number, 返回选中的选项value属性
+//          可选项: time: Boolen, 时间选择器, 默认为false
+//              startTime: String, 初始时间, 默认为"00:00"
+//              endTime: String, 结束时间, 默认为"24:00"
+//              step: Number, 步长, 默认为15
+//              display: Number, 显示的选项数量, 默认为5
+//              alt: String, 默认显示文字, 默认为"Select"
+//              双向绑定参数: v-model, String, 返回选中的时间选项
 
 
 import { defineModel, defineProps, ref, onMounted } from 'vue'
@@ -32,6 +40,26 @@ const mt_select_data = defineProps({
     alt:{
         type: String,
         default: "Select"
+    },
+    default: {
+        type: String,
+        default: true
+    },
+    startTime:{
+        type: String,
+        default: '00:00'
+    },
+    endTime:{
+        type: String,
+        default: '24:00'
+    },
+    step:{
+        type: Number,
+        default: 15
+    },
+    time:{
+        type: Boolean,
+        default: false
     }
 })
 
@@ -95,12 +123,31 @@ const mt_select_create = () =>{
 }
 
 const mt_select_createBoardData = () =>{
-    for(let i = 0;i < mt_select_data.options.length; i++){
-        mt_select_createItem(mt_select_data.options[i])
+    if(mt_select_data.time){
+        let start = mt_select_data.startTime
+        let end = mt_select_data.endTime
+        let start_time = Number(start.split(':')[0]) * 60 + Number(start.split(':')[1])
+        let end_time = Number(end.split(':')[0]) * 60 + Number(end.split(':')[1])
+        let step = mt_select_data.step
+        let find_flag = false
+        let item_num = 0
+        for(let i = start_time,num_of_item = 0; i <= end_time;i += step, num_of_item++){
+            let trans = Math.floor(i/60).toString().padStart(2,'0') + ':' + Math.floor(i%60).toString().padStart(2,'0')
+            find_flag = mt_select_createItem_time(trans, num_of_item)
+            if(find_flag) {
+                item_num = num_of_item
+            }
+        }
+        document.getElementById('mt_select_board').scrollTop = item_num * mt_select_data.height
+        } else if(mt_select_data.default) {
+        for(let i = 0;i < mt_select_data.options.length; i++){
+            mt_select_createItem_normal(mt_select_data.options[i])
+        }
     }
+    
 }
 
-const mt_select_createItem = (item) =>{
+const mt_select_createItem_normal = (item) =>{
     const element = document.getElementById('mt_select_board')
     const mt_item = document.createElement('div');
     mt_item.id = item.value
@@ -125,8 +172,38 @@ const mt_select_createItem = (item) =>{
             mt_select_show.value = item.label
             mt_select_sltValue.value = item.value
         }
-        
     }
+}
+
+const mt_select_createItem_time = (item) =>{
+    let is_find = false
+    const element = document.getElementById('mt_select_board')
+    const mt_item = document.createElement('div');
+    mt_item.id = item
+    mt_item.style.zIndex = '11'
+    mt_item.style.width = mt_select_data.width - 15 + 'px';
+    mt_item.style.height = mt_select_data.height + 'px';
+    mt_item.style.lineHeight = mt_select_data.height + 'px';
+    mt_item.style.fontSize = mt_select_data.height * 0.3 + 'px'
+    mt_item.style.fontWeight = 'bold'
+    mt_item.innerHTML = item
+    if(mt_select_sltValue.value == item) {
+        mt_item.style.color = "blue"
+        is_find = true
+    }
+    mt_item.style.position = "relative";
+    mt_item.style.left= "5px";
+    element.appendChild(mt_item)
+    mt_item.onclick = function(){
+        if( mt_select_sltValue.value == item ){
+            mt_select_show.value = mt_select_data.alt
+            mt_select_sltValue.value = null
+        } else {
+            mt_select_show.value = item
+            mt_select_sltValue.value = item
+        }
+    }
+    return is_find
 }
 
 const mt_select_delect = () =>{
