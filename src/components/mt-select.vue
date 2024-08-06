@@ -17,6 +17,8 @@
 //              display: Number, 显示的选项数量, 默认为5
 //              alt: String, 默认显示文字, 默认为"Select"
 //              双向绑定参数: v-model, String, 返回选中的时间选项
+//          可选项: date: Boolen, 日期选择器, 默认为false
+//              双向绑定参数: v-model, String/Number, 返回选中日期选项
 
 
 import { defineModel, defineProps, ref, onMounted } from 'vue'
@@ -60,7 +62,11 @@ const mt_select_data = defineProps({
     time:{
         type: Boolean,
         default: false
-    }
+    },
+    date:{
+        type: Boolean,
+        default: false
+    },
 })
 
 const mt_select_sltValue = defineModel({
@@ -70,9 +76,14 @@ const mt_select_sltValue = defineModel({
 
 const mt_select_show = ref('')
 const mt_select_colorLock = ref(false)
+const mt_select_delect_flag = ref(true)
+const mt_select_date = ref('2024-6-3')
 
 onMounted(() => {
     mt_select_show.value = mt_select_data.alt
+    if(mt_select_data.date) {
+        mt_select_create()
+    }
 })
 
 const vClickOutside = {
@@ -139,6 +150,15 @@ const mt_select_createBoardData = () =>{
             }
         }
         document.getElementById('mt_select_board').scrollTop = item_num * mt_select_data.height
+        } else if(mt_select_data.date) {
+            if(mt_select_date.value != ''){
+                mt_select_createItem_date(mt_select_date.value)
+                mt_select_date.value = ''
+            } else if(mt_select_sltValue.value == '') {
+                mt_select_createItem_date(mt_select_setNowDate())
+            } else {
+                mt_select_createItem_date(mt_select_sltValue.value)
+            }
         } else if(mt_select_data.default) {
         for(let i = 0;i < mt_select_data.options.length; i++){
             mt_select_createItem_normal(mt_select_data.options[i])
@@ -146,6 +166,32 @@ const mt_select_createBoardData = () =>{
     }
     
 }
+
+const mt_select_setNowDate = () =>{
+    let date_now = new Date()
+    let year = date_now.getFullYear()
+    let month = date_now.getMonth() + 1
+    let strDate = date_now.getDate() 
+    if (month < 10) month = `0${month}` 
+    if (strDate < 10) strDate = `0${strDate}` 
+    let nowDate = `${year}-${month}-${strDate}`
+    return nowDate
+}
+
+const mt_select_calculateDate = (item) =>{
+    let date = new Date(item);
+    date.setMonth(date.getMonth() + 1)
+    date.setDate(0)
+    let monthDate = date.getDate()
+    const weekdays = [0, 1, 2, 3, 4, 5, 6];
+    const weekday = new Date(item).getDay();
+    let week = weekdays[weekday];
+    let days = {
+        'month': monthDate,
+        'week': week
+    }
+    return days
+} 
 
 const mt_select_createItem_normal = (item) =>{
     const element = document.getElementById('mt_select_board')
@@ -206,14 +252,278 @@ const mt_select_createItem_time = (item) =>{
     return is_find
 }
 
+const mt_select_createItem_date = (item) =>{
+    mt_select_createItem_dateTitle(item)
+    mt_select_createItem_dateTop(item)
+    mt_select_createItem_dateDay(item)
+}
+
+const mt_select_createItem_dateTitle = (item)=>{
+    const element = document.getElementById('mt_select_board')
+    let first_date = item.split('-')[0] + '-'+item.split('-')[1] + '-1'
+    let day_year = Number(item.split('-')[0])
+    let day_month = Number(item.split('-')[1])
+    for(let i = 0;i <5;i++) {
+        const mt_item = document.createElement('div');
+        mt_item.id = 'week-' + i
+        mt_item.style.zIndex = '11'
+        if(i != 2) mt_item.style.width = (mt_select_data.width - 23)/7 + 'px';
+        else mt_item.style.width = (mt_select_data.width - 18)/7 * 3 + 'px';
+        mt_item.style.height = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.lineHeight = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.fontSize = (mt_select_data.width)/6 * 0.3 + 'px'
+        mt_item.style.fontWeight = 'bold'
+        mt_item.style.textAlign = 'center'
+        mt_item.style.backgroundColor = 'skyblue'
+        mt_item.style.position = "absolute";
+        mt_item.style.left= (i < 3 ? i : i + 2) * (mt_select_data.width - 15)/7 + 5 +"px";
+        mt_item.style.top = 5 + "px"
+        mt_item.style.userSelect = 'none'
+        if(i == 0) {
+            mt_item.innerHTML = "<<"
+            mt_item.onclick=function(){
+                day_year --
+                let arrow = String(day_year) + '-' + String(day_month) + '-1'
+                mt_select_date.value = arrow
+                mt_select_delect()
+                mt_select_create()
+                mt_select_delect_flag.value = false
+            }
+        }
+        else if(i == 1) {
+            mt_item.innerHTML = "<"
+            mt_item.onclick=function(){
+                day_month --
+                if(day_month == 0) {
+                    day_year --
+                    day_month = 12
+                }
+                let arrow = String(day_year) + '-' + String(day_month) + '-1'
+                mt_select_date.value = arrow
+                mt_select_delect()
+                mt_select_create()
+                mt_select_delect_flag.value = false
+            }
+        }
+        else if(i == 2) mt_item.innerHTML = day_year + '-' + day_month
+        else if(i == 3) {
+            mt_item.innerHTML = ">"
+            mt_item.onclick=function(){
+                day_month ++
+                if(day_month == 13) {
+                    day_year ++
+                    day_month = 1
+                }
+                let arrow = String(day_year) + '-' + String(day_month) + '-1'
+                mt_select_date.value = arrow
+                mt_select_delect()
+                mt_select_create()
+                mt_select_delect_flag.value = false
+            }
+        }
+        else if(i == 4) {
+            mt_item.innerHTML = ">>"
+            mt_item.onclick=function(){
+                day_year ++
+                let arrow = String(day_year) + '-' + String(day_month) + '-1'
+                mt_select_date.value = arrow
+                mt_select_delect()
+                mt_select_create()
+                mt_select_delect_flag.value = false
+            }
+        }
+        element.appendChild(mt_item)
+    }
+}
+
+const mt_select_createItem_dateTop = (item)=>{
+    const element = document.getElementById('mt_select_board')
+    let first_date = item.split('-')[0] + '-'+item.split('-')[1] + '-1'
+    let date_data = mt_select_calculateDate(first_date)
+    let week = date_data.week
+    let month = date_data.month
+    let line = Math.ceil((week + month) / 7)
+    let week_name = ['Sun','Mon','Tues','Wed','Thur','Fri','Sat']
+    for(let i = 0; i< 7; i++){
+        const mt_item = document.createElement('div');
+        mt_item.id = 'week-' + i
+        mt_item.style.zIndex = '11'
+        mt_item.style.width = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.height = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.lineHeight = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.fontSize = (mt_select_data.width)/6 * 0.3 + 'px'
+        mt_item.style.fontWeight = 'bold'
+        mt_item.style.textAlign = 'center'
+        mt_item.innerHTML = week_name[i]
+        mt_item.style.backgroundColor = 'skyblue'
+        mt_item.style.position = "absolute";
+        mt_item.style.left= i * (mt_select_data.width - 15)/7 + 5 +"px";
+        mt_item.style.top = (mt_select_data.width - 15 + line)/7 + 5+"px"
+        mt_item.style.userSelect = 'none'
+        element.appendChild(mt_item)
+    }
+}
+
+const mt_select_createItem_dateDay = (item)=>{
+    const element = document.getElementById('mt_select_board')
+    let first_date = item.split('-')[0] + '-'+item.split('-')[1] + '-1'
+    let date_data = mt_select_calculateDate(first_date)
+    let week = date_data.week
+    let month = date_data.month
+
+    let day_year = Number(item.split('-')[0])
+    let day_month = Number(item.split('-')[1])
+
+    let line = Math.ceil((week + month) / 7)
+    let week_name = ['Sun','Mon','Tues','Wed','Thur','Fri','Sat']
+    for(let i = 1,t = week, l = 1;i <= month;i++,t++) {
+        if(t >= 7) {
+            t = 0
+            l ++
+        }
+        const mt_item = document.createElement('div');
+        mt_item.id = 'date-' + i
+        mt_item.style.zIndex = '11'
+        mt_item.style.width = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.height = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.lineHeight = (mt_select_data.width - 23)/7 + 'px';
+        mt_item.style.fontSize = (mt_select_data.width)/4 * 0.3 + 'px'
+        mt_item.style.fontWeight = 'bold'
+        mt_item.style.textAlign = 'center'
+        mt_item.innerHTML = i
+        mt_item.style.backgroundColor = 'skyblue'
+        let temp_slt = String(day_year) + '-' + (day_month<10 ? '0':'') + String(day_month) 
+                            + '-' +(i<10 ? '0':'') + String(i)
+        if(mt_select_sltValue.value == temp_slt) {
+            mt_item.style.color = "blue"
+        }
+        mt_item.style.position = "absolute";
+        mt_item.style.left= t * (mt_select_data.width - 15)/7 + 5 +"px";
+        mt_item.style.top = (l+1) * (mt_select_data.width - 15 + line)/7 + 5 + "px"
+        mt_item.style.userSelect = 'none'
+        element.appendChild(mt_item)
+        mt_item.onclick = function(){
+            if(mt_select_sltValue.value != temp_slt){
+                mt_select_show.value = temp_slt
+                mt_select_sltValue.value = temp_slt
+            } else {            
+                mt_select_sltValue.value =  ''
+                    mt_select_show.value = mt_select_data.alt
+            }
+        }
+    }
+    mt_select_createItem_date_lastDay(item, line)
+}
+
+const mt_select_createItem_date_lastDay = (item, line) =>{
+    const element = document.getElementById('mt_select_board')
+    let now_date = item.split('-')[0] + '-'+item.split('-')[1] + '-' + '1'
+    let now_data = mt_select_calculateDate(now_date)
+    let last_year = Number(item.split('-')[0])
+    let last_month = Number(item.split('-')[1])
+    last_month -- 
+    if(last_month == 0) {
+        last_month = 12
+        last_year --
+    }
+    let last_date = String(last_year) + '-' + (last_month<10?'0':'') + String(last_month) + '-' + '01'
+    let last_data = mt_select_calculateDate(last_date) 
+    let next_year = Number(item.split('-')[0])
+    let next_month = Number(item.split('-')[1])
+    next_month ++
+    if(next_month == 13) {
+        next_month = 1
+        next_year ++
+    }
+    let next_date = String(next_year) + '-' + (next_month<10?'0':'') + String(next_month) + '-' + '01'
+    let next_data = mt_select_calculateDate(next_date) 
+    if(now_data.week != 0) {
+        for(let i=1;i<=now_data.week;i++){
+            console.log(last_data.month - now_data.week + i)
+            const mt_item = document.createElement('div');
+            mt_item.id = 'date-' + i
+            mt_item.style.zIndex = '11'
+            mt_item.style.width = (mt_select_data.width - 23)/7 + 'px';
+            mt_item.style.height = (mt_select_data.width - 23)/7 + 'px';
+            mt_item.style.lineHeight = (mt_select_data.width - 23)/7 + 'px';
+            mt_item.style.fontSize = (mt_select_data.width)/4 * 0.3 + 'px'
+            mt_item.style.fontWeight = 'bold'
+            mt_item.style.textAlign = 'center'
+            mt_item.innerHTML = last_data.month - now_data.week + i
+            mt_item.style.backgroundColor = '#ccc'
+            mt_item.style.color = "gray"
+            let temp_slt = String(last_year) + '-' + (last_month<10 ? '0':'') + String(last_month) 
+                                + '-' + String(last_data.month - now_data.week + i)
+            if(mt_select_sltValue.value == temp_slt) {
+                mt_item.style.color = "skyblue"
+            }
+            mt_item.style.position = "absolute";
+            mt_item.style.left= (i-1) * (mt_select_data.width - 15)/7 + 5 +"px";
+            mt_item.style.top = 2 * (mt_select_data.width - 10 )/7 + 5 + "px"
+            mt_item.style.userSelect = 'none'
+            element.appendChild(mt_item)
+            mt_item.onclick = function(){
+                if(mt_select_sltValue.value != temp_slt){
+                    mt_select_show.value = temp_slt
+                    mt_select_sltValue.value = temp_slt
+                } else {            
+                    mt_select_sltValue.value =  ''
+                    mt_select_show.value = mt_select_data.alt
+                }
+            }
+        }
+    }
+    if((now_data.week + now_data.month) % 7 != 0 ){
+        console.log((now_data.week + now_data.month) % 7)
+        for(let t = (now_data.week + now_data.month) % 7, i=1; t<7; t++, i++){
+            const mt_item = document.createElement('div');
+            mt_item.id = 'date-' + i
+            mt_item.style.zIndex = '11'
+            mt_item.style.width = (mt_select_data.width - 23)/7 + 'px';
+            mt_item.style.height = (mt_select_data.width - 23)/7 + 'px';
+            mt_item.style.lineHeight = (mt_select_data.width - 23)/7 + 'px';
+            mt_item.style.fontSize = (mt_select_data.width)/4 * 0.3 + 'px'
+            mt_item.style.fontWeight = 'bold'
+            mt_item.style.textAlign = 'center'
+            mt_item.innerHTML = i
+            mt_item.style.backgroundColor = '#ccc'
+            mt_item.style.color = "gray"
+            let temp_slt = String(next_year) + '-' + (next_month<10 ? '0':'') + String(next_month) 
+                                + '-' +'0' + String(i)
+            if(mt_select_sltValue.value == temp_slt) {
+                mt_item.style.color = "skyblue"
+            }
+            mt_item.style.position = "absolute";
+            mt_item.style.left= t * (mt_select_data.width - 15)/7 + 5 +"px";
+            mt_item.style.top = (line + 1) * (mt_select_data.width - 15 +line )/7 + 5 + "px"
+            mt_item.style.userSelect = 'none'
+            element.appendChild(mt_item)
+            mt_item.onclick = function(){
+                if(mt_select_sltValue.value != temp_slt){
+                    mt_select_show.value = temp_slt
+                    mt_select_sltValue.value = temp_slt
+                } else {            
+                    mt_select_sltValue.value =  ''
+                    mt_select_show.value = mt_select_data.alt
+                }
+            }
+        }
+    }
+    element.style.height = (mt_select_data.width) /7 * (line + 2) + 'px';
+}
+
 const mt_select_delect = () =>{
-    if(document.getElementById('mt_select_board')) {
+    if(mt_select_delect_flag.value) {
+        if(document.getElementById('mt_select_board')) {
         document.getElementById('mt_select_board').remove()
     }
     mt_select_colorLock.value = false
     mt_select_colorLow()
     document.getElementById('mt_select_Arrow').style.transform = 'rotate(0deg)';
     console.log("DEL")
+    } else {
+        mt_select_delect_flag.value = true
+    }
 }
 
 const mt_select_colorHigh = () =>{

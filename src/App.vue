@@ -119,7 +119,7 @@ const message = ref('test')
       <mt_table :thead="thead" :tbody="tbody" :width="400" :height="200" />
     </div> -->
     <div>
-      <mt_select v-model="selectValue" :options="options" time />
+      <mt_select v-model="selectValue" :options="options" date />
       <button @click="console.log(selectValue)">Test</button>
     </div>
     <!-- <div style="position: absolute; left: 20%;">
