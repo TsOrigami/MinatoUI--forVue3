@@ -12,6 +12,7 @@ import mt_button from './components/mt-button.vue'
 import mt_switch from './components/mt-switch.vue'
 import mt_autocomplete from './components/mt-autocomplete.vue'
 import mt_checkbox from './components/mt-checkbox.vue'
+import mt_colorPicker from './components/mt-colorPicker.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -139,11 +140,13 @@ const checkbox_test = ref()
         <mt_autocomplete :options="autoOptions" v-model="message"  />
       <button @click="console.log(message)">Test</button>
      </div> -->
-     <div>
-      <mt_checkbox v-model = "checkbox_test" style="top: 100px; left: 10px; position: absolute;" />
+     <!-- <div>
+        <mt_checkbox v-model = "checkbox_test" style="top: 100px; left: 10px; position: absolute;" />
       <button @click="console.log(checkbox_test?'True':'False')">test</button>
-    </div>
-     
+    </div> -->
+     <div style="position: absolute; left: 100px; top: 100px;">
+      <mt_color-picker></mt_color-picker>
+     </div>
   </div>
 </template>
 
