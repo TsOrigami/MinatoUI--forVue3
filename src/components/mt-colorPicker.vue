@@ -1,14 +1,19 @@
 <script setup>
 
-//2024.8.8 没写完 颜色选择器
-//2024.8.9 没写完 差一个透明度
+//2024.8.10 基本完成 透明的换另一种写法。
+
 
 import { defineModel, defineProps, ref, onMounted } from 'vue'
+
+const mt_colorPicker_slt_color = defineModel({
+    type: String,
+    default: '#ffffff'
+})
 
 onMounted(()=>{
     colorBox('red')
     colorBar()
-    colorTrans()
+    // colorTrans()
 })
 
 const flag = ref(false)
@@ -111,34 +116,35 @@ const colorBar = () =>{
     ctx.fillRect(0, 0, 20, height);
 }
 
-const colorTrans = () =>{
-    const canvas = document.getElementById("canvasTrans")
-    const ctx = canvas.getContext('2d')
-    ctx.canvas.willReadFrequently = true;
-    const width = 200
+// const colorTrans = () =>{
+//     const canvas = document.getElementById("canvasTrans")
+//     const ctx = canvas.getContext('2d')
+//     ctx.canvas.willReadFrequently = true;
+//     const width = 200
 
-    canvas.style.top = 200 + 40 +'px'
-    canvas.style.position = 'absolute'
-    canvas.style.left = '20px'
-    canvas.style.border = '1px solid black'
+//     canvas.style.top = 200 + 40 +'px'
+//     canvas.style.position = 'absolute'
+//     canvas.style.left = '20px'
+//     canvas.style.border = '1px solid black'
 
-    canvas.width = '200'
-    canvas.height = '20'
+//     canvas.width = '200'
+//     canvas.height = '20'
 
-    let gradientBar = ctx.createLinearGradient(0, 0, width, 0);
-    gradientBar.addColorStop(0, 'rgba(0,0,0,0)');
-    gradientBar.addColorStop(1, 'rgba(0,0,0,1)');
+//     let gradientBar = ctx.createLinearGradient(0, 0, width, 0);
+//     gradientBar.addColorStop(0, 'rgba(0,0,0,0)');
+//     gradientBar.addColorStop(1, 'rgba(0,0,0,1)');
 
-    ctx.fillStyle = gradientBar;
-    ctx.fillRect(0, 0, width, 20);
-}
+//     ctx.fillStyle = gradientBar;
+//     ctx.fillRect(0, 0, width, 20);
+// }
 
-const getRgbaAtBar = (event) => {
+const moveGetBar = (event) =>{
     let height = 200
     let pos = {
         'x': event.offsetX,
         'y': event.offsetY
     }
+    if(pos.x <= 0 || pos.x >= 20 || pos.y <= 0 ||pos.y >= 200) return
     const canvas = document.getElementById("canvasBar")
     const ctx = canvas.getContext('2d')
     ctx.canvas.willReadFrequently = true;
@@ -171,14 +177,27 @@ const getRgbaAtBar = (event) => {
     getExcRgbaAtBox(sltBox_arrow.offsetLeft, sltBox_arrow.offsetTop)
 }
 
-const getRgbaAtBox = (event) => {
+const getRgbaAtBar = (event) => {
+    moveGetBar(event)
+    let element = document.getElementById('hoverBar')
+    element.ondragstart = function() {
+        return false;
+    };
+    element.addEventListener('mousemove', moveGetBar)
+}
+
+const removeGetRgbaAtBar = () => {
+    let element = document.getElementById('hoverBar')
+    element.removeEventListener('mousemove', moveGetBar)
+}
+
+const moveGetColor = (event) =>{
     let height = 200
     let pos = {
-        'x': event.offsetX - 30,
+        'x': event.offsetX,
         'y': event.offsetY
     }
-    console.log(pos)
-    if(pos.x < 0) return
+    if(pos.x <= 0 || pos.x >= 200 || pos.y <= 0 || pos.y >= 200) return
 
     const arrow = document.getElementById('sltBox')
     arrow.style.left = pos.x + 20 - 4 +'px'
@@ -190,7 +209,7 @@ const getRgbaAtBox = (event) => {
     let data = imgData.data;
 
     let dataIndex = (pos.x + pos.y * height) * 4;
-    
+
     let real_data = [
                     data[dataIndex],
                     data[dataIndex + 1],
@@ -205,18 +224,30 @@ const getRgbaAtBox = (event) => {
     if(exc_color_3.length == 1) exc_color_3 = '0' + exc_color_3
 
     let exc_color = "#" + exc_color_1 + exc_color_2 + exc_color_3
-    console.log(exc_color)
 
 
-   let oldColor = '0x' + exc_color.replace(/#/g, '');
-   let newColor = '000000' + (0xFFFFFF - oldColor).toString(16);
-   arrow.style.borderColor =  '#'+ newColor.substring(newColor.length - 6, newColor.length);
+    let oldColor = '0x' + exc_color.replace(/#/g, '');
+    let newColor = '000000' + (0xFFFFFF - oldColor).toString(16);
+    arrow.style.borderColor =  '#'+ newColor.substring(newColor.length - 6, newColor.length);
 
-    document.getElementById('sltColor').style.backgroundColor = exc_color
+    // document.getElementById('sltColor').style.backgroundColor = exc_color
     document.getElementById('colorShow').style.backgroundColor = exc_color
     color.value = exc_color
+    mt_colorPicker_slt_color.value = exc_color
+}
 
+const getRgbaAtBox = (event) => {
+    moveGetColor(event)
+    let element = document.getElementById('hoverBox')
+    element.ondragstart = function() {
+        return false;
+    };
+    element.addEventListener('mousemove', moveGetColor)
+}
 
+const removeGetRgbaAtBox = () =>{
+    let element = document.getElementById('hoverBox')
+    element.removeEventListener('mousemove', moveGetColor)
 }
 
 const getExcRgbaAtBox = (x, y) => {
@@ -225,7 +256,6 @@ const getExcRgbaAtBox = (x, y) => {
         'x': x - 20 + 4,
         'y': y - 20 + 4
     }
-    console.log(pos)
 
     const canvas = document.getElementById("canvasBox")
     const ctx = canvas.getContext('2d')
@@ -248,7 +278,6 @@ const getExcRgbaAtBox = (x, y) => {
     if(exc_color_3.length == 1) exc_color_3 = '0' + exc_color_3
 
     let exc_color = "#" + exc_color_1 + exc_color_2 + exc_color_3
-    console.log(exc_color)
 
 
     const arrow = document.getElementById('sltBox')
@@ -256,7 +285,7 @@ const getExcRgbaAtBox = (x, y) => {
     let newColor = '000000' + (0xFFFFFF - oldColor).toString(16);
     arrow.style.borderColor =  '#'+ newColor.substring(newColor.length - 6, newColor.length);
 
-    document.getElementById('sltColor').style.backgroundColor = exc_color
+    // document.getElementById('sltColor').style.backgroundColor = exc_color
     document.getElementById('colorShow').style.backgroundColor = exc_color
     color.value = exc_color
 }
@@ -272,12 +301,16 @@ const getExcRgbaAtBox = (x, y) => {
         </div>
         <div id="colorPicker" class="mainboard" @click="stopHidden = true">
             <div id="casvasBoxBoder" class="casvasBoxBoder"></div>
-            <canvas id="canvasBox" @mousedown="getRgbaAtBox"></canvas>
+            <canvas id="canvasBox"></canvas>
             <div id="sltBox" class="sltBox"></div>
-            <canvas id="canvasBar" @click="getRgbaAtBar"></canvas>
+            <div id="hoverBox" class="hoverBox"  
+                @mousedown="getRgbaAtBox" @mouseup="removeGetRgbaAtBox" @mouseleave="removeGetRgbaAtBox"></div>
+            <canvas id="canvasBar"></canvas>
             <div id="sltBar" class="sltBar"></div>
-            <canvas id="canvasTrans"></canvas>
-            <div id="sltColor" class="sltColor"> </div>
+            <div id="hoverBar" class="hoverBar"
+                @mousedown="getRgbaAtBar" @mouseup="removeGetRgbaAtBar" @mouseleave="removeGetRgbaAtBar"></div>
+            <!-- <canvas id="canvasTrans"></canvas>
+            <div id="sltColor" class="sltColor"> </div> -->
         </div>
     </div>
 </template>
@@ -322,10 +355,13 @@ const getExcRgbaAtBox = (x, y) => {
 }
 
 .mainboard{
-    position: absolute;
-    width: 300px ;
-    height: 300px;
-    border: 2px solid black;
+    position: relative;
+    top: 2px;
+    width: 290px ;
+    height: 250px;
+    /* height: 300px; */
+    border: 2px solid blue;
+    border-radius: 20px;
     visibility: hidden;
 }
 
@@ -336,6 +372,15 @@ const getExcRgbaAtBox = (x, y) => {
     position: absolute;
     left: 21px;
     top: 20px;
+}
+
+.hoverBox{
+    width: 201px;
+    height: 202px;
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    left: 20px;
+    top: 19px;
 }
 
 .casvasBoxBoder{
@@ -364,6 +409,15 @@ const getExcRgbaAtBox = (x, y) => {
     left: 239px;
     top: 20px;
     border: 1.5px solid black;
+}
+
+.hoverBar{
+    background-color: rgba(0, 0, 0, 0);
+    width: 23.5px;
+    height: 202px;
+    position: absolute;
+    left: 239px;
+    top: 20px;
 }
 
 </style>

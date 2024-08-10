@@ -114,6 +114,8 @@ const message = ref('test')
 
 const checkbox_test = ref()
 
+const slt_color = ref('')
+
 </script>
 
 <template>
@@ -145,7 +147,8 @@ const checkbox_test = ref()
       <button @click="console.log(checkbox_test?'True':'False')">test</button>
     </div> -->
      <div style="position: absolute; left: 100px; top: 100px;">
-      <mt_color-picker></mt_color-picker>
+      <mt_color-picker v-model="slt_color"></mt_color-picker>
+      <button @click="console.log(slt_color)">Show</button>
      </div>
   </div>
 </template>
