@@ -5,24 +5,67 @@
 //3.组件参数：
 //          双向绑定参数: v-model: String, 选中的颜色, 默认为#ffffff
 
+//2024.8.12 在做大小适配
+
 
 import { defineModel, defineProps, ref, onMounted } from 'vue'
+
+const mt_colorPicker_data = defineProps({
+    'width':{
+        type:Number,
+        default: 200,
+    },
+    'height':{
+        type:Number,
+        default: 30
+    },
+    'boardHeight':{
+        type: Number,
+        default: 300
+    },
+    'boardWidth':{
+        type: Number,
+        default: 300
+    },
+    'zindex': {
+        type: Number,
+        default: 10
+    }
+})
 
 const mt_colorPicker_colorPicker_slt_color = defineModel({
     type: String,
     default: '#ffffff'
 })
 
+const mt_colorPicker_board_height = ref('0px')
+const mt_colorPicker_board_width = ref('0px')
+const mt_colorPicker_main_height = ref('0px')
+const mt_colorPicker_main_width = ref('0px')
+const mt_colorPicker_mainboard_height = ref('0px')
+const mt_colorPicker_mainboard_width = ref('0px')
+const mt_colorPicker_mainboard_visible = ref('hidden')
+const mt_colorPicker_button_showColor = ref('white')
+const mt_colorPicker_flag = ref(false)
+const mt_colorPicker_color = ref('#ffffff')
+const mt_colorPicker_canvasSize = ref(0)
+const mt_colorPicker_sltBox_left = ref('21px')
+const mt_colorPicker_sltBox_top = ref('20px')
+const mt_colorPicker_sltBox_borderColor = ref('black')
+const mt_colorPicker_sltBar_top = ref('20px')
+const mt_colorPicker_stopHidden = ref(false)
+const mt_colorPicker_showMain = ref(null)
+
 onMounted(()=>{
+    mt_colorPicker_main_height.value = mt_colorPicker_data['height'] +'px'
+    mt_colorPicker_main_width.value = mt_colorPicker_data['width'] +'px'
+    mt_colorPicker_board_height.value = mt_colorPicker_data['height'] +'px'
+    mt_colorPicker_board_width.value = mt_colorPicker_data['width'] +'px'
+    mt_colorPicker_canvasSize.value = Math.min(mt_colorPicker_data['boardHeight'], mt_colorPicker_data['boardWidth'])
     mt_colorPicker_colorBox('red')
     mt_colorPicker_colorBar()
     // colorTrans()
 })
-
-const mt_colorPicker_flag = ref(false)
-const mt_colorPicker_color = ref('#ffffff')
-const mt_colorPicker_stopHidden = ref(false)
-const mt_colorPicker_showMain = ref(null)
 
 const vClickOutside = {
     mounted(mt, binding) {
@@ -49,39 +92,36 @@ const vClickOutside = {
 }
 
 const mt_colorPicker_excColorPicker = () =>{
-    let mt_colorPicker_main = document.getElementById('mt_colorPicker_colorPickerMain')
-    let mt_colorPicker_element = document.getElementById('mt_colorPicker_colorPicker')
     let mt_colorPicker_button = document.getElementById('mt_colorPicker_colorPickerButton')
-    let mt_colorPicker_border = document.getElementById('mt_colorPicker_cpButtonBorder')
     if(mt_colorPicker_flag.value){
         if(mt_colorPicker_showMain.value != null){
             clearTimeout(showMain.value)
             mt_colorPicker_showMain.value = null
         }
-        mt_colorPicker_element.style.visibility = 'hidden'
-        mt_colorPicker_element.style.width = '0px'
-        mt_colorPicker_element.style.height = '0px'
         mt_colorPicker_button.style.transitionDuration = '0.5s'
         mt_colorPicker_button.style.top = '0px'
         mt_colorPicker_button.style.left = '0px'
-        mt_colorPicker_main.style.height = '30px'
-        mt_colorPicker_main.style.width = '200px'
-        mt_colorPicker_border.style.height = '30px'
-        mt_colorPicker_border.style.width = '200px'
+        mt_colorPicker_mainboard_height.value = '0px'
+        mt_colorPicker_mainboard_width.value = '0px'
+        mt_colorPicker_mainboard_visible.value = 'hidden'
+        mt_colorPicker_main_height.value = mt_colorPicker_data['height'] + 'px'
+        mt_colorPicker_main_width.value = mt_colorPicker_data['width'] + 'px'
+        mt_colorPicker_board_height.value = mt_colorPicker_data['height'] + 'px'
+        mt_colorPicker_board_width.value = mt_colorPicker_data['width'] + 'px'
     } else {
         mt_colorPicker_showMain.value = setTimeout(()=>{
-            mt_colorPicker_element.style.visibility = 'visible'
+            mt_colorPicker_mainboard_visible.value = 'visible'
             mt_colorPicker_showMain.value = null
         },300)
-        mt_colorPicker_element.style.width = '290px'
-        mt_colorPicker_element.style.height = '300px'
         mt_colorPicker_button.style.transitionDuration = '0.5s'
-        mt_colorPicker_button.style.top = '270px'
-        mt_colorPicker_button.style.left = '90px'
-        mt_colorPicker_main.style.height = '300px'
-        mt_colorPicker_main.style.width = '290px'
-        mt_colorPicker_border.style.height = '300px'
-        mt_colorPicker_border.style.width = '290px'
+        mt_colorPicker_button.style.top =  mt_colorPicker_data['boardHeight'] - mt_colorPicker_data['height']  + 'px'
+        mt_colorPicker_button.style.left =  mt_colorPicker_data['boardWidth'] - mt_colorPicker_data['width']  + 'px'
+        mt_colorPicker_mainboard_height.value = mt_colorPicker_data['boardWidth'] + 'px'
+        mt_colorPicker_mainboard_width.value = mt_colorPicker_data['boardHeight'] +'px'
+        mt_colorPicker_main_height.value = mt_colorPicker_data['boardHeight'] + 'px'
+        mt_colorPicker_main_width.value = mt_colorPicker_data['boardWidth'] + 'px'
+        mt_colorPicker_board_height.value = mt_colorPicker_data['boardHeight'] + 'px'
+        mt_colorPicker_board_width.value = mt_colorPicker_data['boardWidth'] + 'px'
     }
     mt_colorPicker_flag.value = !mt_colorPicker_flag.value
 }
@@ -92,24 +132,21 @@ const mt_colorPicker_offColorPicker = () =>{
         return
     }
     mt_colorPicker_flag.value = false
-    let mt_colorPicker_main = document.getElementById('mt_colorPicker_colorPickerMain')
-    let mt_colorPicker_element = document.getElementById('mt_colorPicker_colorPicker')
     let mt_colorPicker_button = document.getElementById('mt_colorPicker_colorPickerButton')
-    let mt_colorPicker_border = document.getElementById('mt_colorPicker_cpButtonBorder')
     if(mt_colorPicker_showMain.value != null){
             clearTimeout(showMain.value)
             mt_colorPicker_showMain.value = null
     }
-    mt_colorPicker_element.style.visibility = 'hidden'
-    mt_colorPicker_element.style.width = '0px'
-    mt_colorPicker_element.style.height = '0px'
     mt_colorPicker_button.style.transitionDuration = '0.5s'
     mt_colorPicker_button.style.top = '0px'
     mt_colorPicker_button.style.left = '0px'
-    mt_colorPicker_main.style.height = '30px'
-    mt_colorPicker_main.style.width = '200px'
-    mt_colorPicker_border.style.height = '30px'
-    mt_colorPicker_border.style.width = '200px'
+    mt_colorPicker_mainboard_height.value = '0px'
+    mt_colorPicker_mainboard_width.value = '0px'
+    mt_colorPicker_mainboard_visible.value = 'hidden'
+    mt_colorPicker_main_height.value = mt_colorPicker_data['height'] + 'px'
+    mt_colorPicker_main_width.value = mt_colorPicker_data['width'] + 'px'
+    mt_colorPicker_board_height.value = mt_colorPicker_data['height'] + 'px'
+    mt_colorPicker_board_width.value = mt_colorPicker_data['width'] + 'px'
 }
 
 const mt_colorPicker_colorBox = (color) => {
@@ -117,42 +154,47 @@ const mt_colorPicker_colorBox = (color) => {
     const canvas = document.getElementById("mt_colorPicker_canvasBox")
     const ctx = canvas.getContext('2d')
     ctx.canvas.willReadFrequently = true;
-    const width = 200
+    const canvasWidth = mt_colorPicker_canvasSize.value
+    
+    const width = canvasWidth * (2/3)
 
     canvas.style.position = 'absolute'
-    canvas.style.left = - 30  + 1 + 20 +'px'
+    canvas.style.left = - 30  + 1 + canvasWidth * (2/30) +'px'
     canvas.style.top = 20 +'px'
 
-    canvas.width = '230'
-    canvas.height = '200'
-
+    canvas.width = canvasWidth * (2/3) + canvasWidth / 10
+    canvas.height = canvasWidth * (2/3)
+    
     // 底色填充，也就是（举例红色）到白色
-    let gradientBase = ctx.createLinearGradient(30, 0, width+30, 0);
+    let gradientBase = ctx.createLinearGradient(canvasWidth / 10, 0, width+30, 0);
     gradientBase.addColorStop(1, color);
     gradientBase.addColorStop(0, 'rgba(255,255,255,1)');
     ctx.fillStyle = gradientBase;
-    ctx.fillRect(30, 0, width, width);
+    ctx.fillRect(canvasWidth / 10, 0, width, width);
     //第二次填充，黑色到透明
     let my_gradient1 = ctx.createLinearGradient(0, 0, 0, width);
     my_gradient1.addColorStop(0, 'rgba(0,0,0,0)');
     my_gradient1.addColorStop(1, 'rgba(0,0,0,1)');
     ctx.fillStyle = my_gradient1;
-    ctx.fillRect(30, 0, width, width);
+    ctx.fillRect(canvasWidth / 10, 0, width, width);
 }
 
 const mt_colorPicker_colorBar = () =>{
     const canvas = document.getElementById("mt_colorPicker_canvasBar")
     const ctx = canvas.getContext('2d')
     ctx.canvas.willReadFrequently = true;
-    const height = 200
+
+    const canvasWidth = mt_colorPicker_canvasSize.value
+
+    const height = canvasWidth * 2/3
     
     canvas.style.position = 'absolute'
-    canvas.style.left = 240 +'px'
-    canvas.style.top = '20px'
+    canvas.style.left = canvasWidth * 0.8 +'px'
+    canvas.style.top = canvasWidth * (2/30) + 'px'
     canvas.style.border = '1px solid black'
 
-    canvas.width = '20'
-    canvas.height = '200'
+    canvas.width = canvasWidth * (2/30)
+    canvas.height = canvasWidth * (2/3)
 
     let gradientBar = ctx.createLinearGradient(0, 0, 0, height);
     gradientBar.addColorStop(0, '#f00');
@@ -229,6 +271,7 @@ const mt_colorPicker_moveGetBar = (event) =>{
 }
 
 const mt_colorPicker_getRgbaAtBar = (event) => {
+    mt_colorPicker_stopHidden.value = true
     mt_colorPicker_moveGetBar(event)
     let element = document.getElementById('mt_colorPicker_hoverBar')
     element.ondragstart = function() {
@@ -250,9 +293,8 @@ const mt_colorPicker_moveGetColor = (event) =>{
     }
     if(pos.x <= 0 || pos.x >= 200 || pos.y <= 0 || pos.y >= 200) return
 
-    const arrow = document.getElementById('mt_colorPicker_sltBox')
-    arrow.style.left = pos.x + 20 - 4 +'px'
-    arrow.style.top = pos.y + 20 - 4 +'px'
+    mt_colorPicker_sltBox_left.value = pos.x + 20 - 4 +'px'
+    mt_colorPicker_sltBox_top.value = pos.y + 20 - 4 +'px'
 
     const canvas = document.getElementById("mt_colorPicker_canvasBox")
     const ctx = canvas.getContext('2d')
@@ -279,16 +321,21 @@ const mt_colorPicker_moveGetColor = (event) =>{
 
     let oldColor = '0x' + exc_color.replace(/#/g, '');
     let newColor = '000000' + (0xFFFFFF - oldColor).toString(16);
-    arrow.style.borderColor =  '#'+ newColor.substring(newColor.length - 6, newColor.length);
+    mt_colorPicker_sltBox_borderColor.value = '#'+ newColor.substring(newColor.length - 6, newColor.length);
 
     // document.getElementById('mt_colorPicker_sltColor').style.backgroundColor = exc_color
-    document.getElementById('mt_colorPicker_colorShow').style.backgroundColor = exc_color
+    mt_colorPicker_button_showColor.value = exc_color
     mt_colorPicker_color.value = exc_color
     mt_colorPicker_colorPicker_slt_color.value = exc_color
 }
 
 const mt_colorPicker_getRgbaAtBox = (event) => {
+    mt_colorPicker_stopHidden.value = true
     mt_colorPicker_moveGetColor(event)
+    // let mt_colorPicker_main = document.getElementById('mt_colorPicker_colorPickerMain')
+    // mt_colorPicker_main.style.height = mt_colorPicker_data['boardHeight'] +'px'
+    // mt_colorPicker_main.style.width = mt_colorPicker_data['boardWidth'] + 'px'
+
     let element = document.getElementById('mt_colorPicker_hoverBox')
     element.ondragstart = function() {
         return false;
@@ -307,7 +354,6 @@ const mt_colorPicker_getExcRgbaAtBox = (x, y) => {
         'x': x - 20 + 4,
         'y': y - 20 + 4
     }
-
     const canvas = document.getElementById("mt_colorPicker_canvasBox")
     const ctx = canvas.getContext('2d')
     let imgData = ctx.getImageData(30, 0, height, height);
@@ -344,16 +390,30 @@ const mt_colorPicker_getExcRgbaAtBox = (x, y) => {
 </script>
 
 <template>
-    <div id="mt_colorPicker_colorPickerMain" class="mt_colorPicker_colorPickerMain">
-        <div id="mt_colorPicker_colorPickerButton" class="mt_colorPicker_colorPickerButton" @click="mt_colorPicker_excColorPicker" v-click-outside="mt_colorPicker_offColorPicker">
-            <div class="mt_colorPicker_buttonAlt">选择颜色 :</div>
-            <div class="mt_colorPicker_butttonColor">{{ mt_colorPicker_color }}</div>
-            <div id="mt_colorPicker_colorShow" class="mt_colorPicker_buttonShow"></div>
+    <div id="mt_colorPicker_colorPickerMain" style="position: relative; left: 0px; top: 0px; transition-duration: 0.5s;"
+            :style="{height: mt_colorPicker_main_height, width: mt_colorPicker_main_width}">
+        <div id="mt_colorPicker_colorPickerButton" style="position: relative; transition-duration: 0.5s;"
+            :style="{height: height +'px', width: width +'px', zIndex: zindex + 2 }"
+            @click="mt_colorPicker_excColorPicker" v-click-outside="mt_colorPicker_offColorPicker">
+            <div style="position: absolute;"
+                :style="{left: height*0.25+'px', width:width*0.4+'px' ,height: height*2/3 +'px' ,
+                        lineHeight: height*2/3 +'px', top: height/6 +'px'}">选择颜色 :</div>
+            <div style="position: absolute; font-weight: bold;"
+                :style="{left: width*0.4+'px', width: width/4 + 'px', height: height*2/3 +'px',
+                    lineHeight: height*2/3 +'px', top: height/6 +'px'}">{{ mt_colorPicker_color }}</div>
+            <div id="mt_colorPicker_colorShow" style="position: absolute; border: 2px solid black;"
+                    :style="{left: width*0.75 +'px', top: height/6 +'px', height: height*2/3 +'px', width: height*2/3 +'px',
+                        backgroundColor: mt_colorPicker_button_showColor}"></div>
         </div>
-        <div id="mt_colorPicker_colorPicker" class="mt_colorPicker_mainboard" @click="mt_colorPicker_stopHidden = true">
-            <div id="mt_colorPicker_casvasBoxBoder" class="mt_colorPicker_casvasBoxBoder"></div>
+        <div id="mt_colorPicker_colorPicker" class="mt_colorPicker_mainboard" @click="mt_colorPicker_stopHidden = true"
+            style="position: relative;"
+            :style="{height: mt_colorPicker_mainboard_height, width:mt_colorPicker_mainboard_width, borderRadius: height*0.25+'px',
+                    visibility: mt_colorPicker_mainboard_visible, zIndex: zindex + 1, top: -height+'px'}">
             <canvas id="mt_colorPicker_canvasBox"></canvas>
-            <div id="mt_colorPicker_sltBox" class="mt_colorPicker_sltBox"></div>
+            <div id="mt_colorPicker_sltBox" style="border: 2px solid black; position: absolute; "
+                :style="{width: mt_colorPicker_canvasSize / 30 +'px' , height: mt_colorPicker_canvasSize / 30 +'px',
+                        left: mt_colorPicker_sltBox_left, top: mt_colorPicker_sltBox_top, 
+                        borderColor: mt_colorPicker_sltBox_borderColor }"></div>
             <div id="mt_colorPicker_hoverBox" class="mt_colorPicker_hoverBox"  
                 @mousedown="mt_colorPicker_getRgbaAtBox" @mouseup="mt_colorPicker_removeGetRgbaAtBox" @mouseleave="mt_colorPicker_removeGetRgbaAtBox"></div>
             <canvas id="mt_colorPicker_canvasBar"></canvas>
@@ -362,109 +422,22 @@ const mt_colorPicker_getExcRgbaAtBox = (x, y) => {
                 @mousedown="mt_colorPicker_getRgbaAtBar" @mouseup="mt_colorPicker_removeGetRgbaAtBar" @mouseleave="mt_colorPicker_removeGetRgbaAtBar"></div>
             <!-- <canvas id="mt_colorPicker_canvasTrans"></canvas> -->
         </div>
-        <div id="mt_colorPicker_cpButtonBorder" class="mt_colorPicker_cpButtonBorder"></div>
+        <div id="mt_colorPicker_cpButtonBorder" style="position: absolute; top: 0px; 
+                transition-duration: 0.5s; border: 2px solid blue;"
+            :style="{height: mt_colorPicker_board_height, width: mt_colorPicker_board_width, zIndex: zindex, borderRadius: height*0.25+'px' }"></div>
     </div>
 </template>
 
 <style scoped>
 
-.mt_colorPicker_colorPickerMain{
-    position: relative;
-    left: 0px;
-    top: 0px;
-    width: 200px;
-    height: 30px;
-    transition-duration: 0.5s;
-}
-
-.mt_colorPicker_colorPickerButton{
-    position: relative;
-    width: 200px;
-    height: 30px;
-    /* border: 2px solid blue; */
-    border-radius: 8px;
-    transition-duration: 0.5s;
-    z-index: 11;
-}
-
-.mt_colorPicker_cpButtonBorder{
-    position: absolute;
-    /* left: -2px;
-    top: -2px; */
-    top: 0px;
-    width: 200px;
-    height: 30px;
-    border: 2px solid blue;
-    border-radius: 8px;
-    z-index: 9;
-    transition-duration: 0.5s;
-}
-
-.mt_colorPicker_buttonAlt{
-    position: absolute;
-    left: 7.5px;
-    width: 80px;
-    height: 20px;
-    top: 5px;
-    line-height: 20px;
-}
-
-.mt_colorPicker_butttonColor{
-    position: absolute;
-    left: 77.5px;
-    width: 50px;
-    height: 20px;
-    top: 5px;
-    line-height: 20px;
-    font-weight: bold;
-}
-
-.mt_colorPicker_buttonShow{
-    position: absolute;
-    top: 5px;
-    left: 142.5px;
-    background-color: white;
-    border: 2px solid black;
-    height: 20px;
-    width: 20px;
-}
-
-.mt_colorPicker_mainboard{
-    position: relative;
-    top: -30px;
-    width: 0px ;
-    height: 0px;
-    /* border: 2px solid blue; */
-    border-radius: 8px;
-    z-index: 10;
-    visibility: hidden;
-}
-
-.mt_colorPicker_sltBox{
-    width: 9px;
-    height: 9px;
-    border: 2px solid black;
-    position: absolute;
-    left: 21px;
-    top: 20px;
-}
-
 .mt_colorPicker_hoverBox{
     width: 201px;
-    height: 202px;
-    background-color: rgba(0, 0, 0, 0);
-    position: absolute;
-    left: 20px;
-    top: 19px;
-}
-
-.mt_colorPicker_casvasBoxBoder{
-    width: 201px;
     height: 201px;
-    border: 1px solid black;
+    background-color: rgba(0, 0, 0, 0);
     position: absolute;
     left: 20.5px;
     top: 19.5px;
+    border: 1px solid black;
 }
 
 .mt_colorPicker_sltColor{
@@ -494,6 +467,4 @@ const mt_colorPicker_getExcRgbaAtBox = (x, y) => {
     left: 239px;
     top: 20px;
 }
-
-
 </style>
