@@ -147,10 +147,11 @@ const slt_color = ref('')
       <button @click="console.log(checkbox_test?'True':'False')">test</button>
     </div> -->
      <div style="position: absolute; left: 100px; top: 100px;">
-      <mt_color-picker v-model="slt_color"></mt_color-picker>
+      <mt_color-picker v-model="slt_color" RGBA></mt_color-picker>
       <button @click="console.log(slt_color)">Show</button>
      </div>
   </div>
+  <!-- <div class="test"></div> -->
 </template>
 
 <style scoped>
@@ -161,5 +162,9 @@ const slt_color = ref('')
   width: 100%;
   height: 150%;
   /* background-color: #ccc; */
+}
+
+.test{
+  background-position: 0 0, 0 5px, 5px -5px, -5px 0;
 }
 </style>
