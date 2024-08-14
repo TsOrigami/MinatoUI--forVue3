@@ -22,7 +22,7 @@ import { defineProps, ref } from 'vue'
 
 const place = ref(1)
 const tempPlace = ref(1)
-const data = defineProps({
+const mt_btnGroup_data = defineProps({
     btns: {
         type: Array,
         default: []
@@ -70,7 +70,9 @@ const data = defineProps({
 <template>
     <div style="position: relative; border-style: solid; border-width: 2px; border-radius: 10px; padding: 5px; 
             display: flex; justify-content: space-between;"
-        :style="{ width: width + 'px', height: height + 'px', backgroundColor: color, borderColor: borderColor }">
+            :style="{
+              width: width + 'px', height: height + 'px', backgroundColor: color, borderColor: borderColor
+            }">
         <button v-for="(item, index) in btns" style="border-radius: 10px;z-index: 2; "
             :style="{ width: (width - (btns.length + 1) * 5) / btns.length + 'px' }"
             @click="method(index + 1), place = index + 1, tempPlace = place" @mouseover="tempPlace = index + 1"
@@ -78,13 +80,13 @@ const data = defineProps({
             {{ item }}</button>
         <div :style="{
             width: (width - (btns.length + 1) * 5) / btns.length + 8 + 'px',
-            left: 1 + (width / btns.length - 2.5) * (place - 1) + 'px', height: height - 6 + 'px',
+            left: 1 + ((width - (btns.length + 1) * 5) / btns.length + 4) * (place - 1) + 'px', height: height - 6 + 'px',
             backgroundColor: activeColor, borderColor: activeBorderColor
         }" style=" border-radius:10px; top: 1px; transition-duration: 0.3s;border-style: solid; border-width: 2px;
             border:2px solid blue; position: absolute; z-index: 1;"></div>
         <div :style="{
             width: (width - (btns.length + 1) * 5) / btns.length + 8 + 'px',
-            left: 1 + (width / btns.length - 2.5) * (tempPlace - 1) + 'px', height: height - 6 + 'px',
+            left: 1 + ((width  - (btns.length + 1) * 5) / btns.length + 4) * (tempPlace - 1) + 'px', height: height - 6 + 'px',
             borderColor: hoverBorderColor
         }" style=" border-radius:10px; top: 1px; transition-duration: 0.3s;border-style: solid; border-width: 2px;
             border:2px solid gray; background-color: gray; position: absolute; z-index: 0;"></div>
