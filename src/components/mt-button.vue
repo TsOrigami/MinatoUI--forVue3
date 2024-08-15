@@ -25,7 +25,7 @@
 
 import { ref, defineProps, watch, onMounted, nextTick } from 'vue'
 
-const data = defineProps({
+const mt_button_data = defineProps({
     disable: {
         type: Boolean,
         default: false
@@ -57,7 +57,7 @@ const data = defineProps({
 <template>
     <div>
         <button id="mt_button_Button" 
-            :class ="plain ? type + 'Plain' : type" :style="{'height': height+'px', 'width':width+'px', 
+            :class ="'mt_button_' + plain ? type + 'Plain' : type" :style="{'height': height+'px', 'width':width+'px', 
                 'borderRadius': round? height*5 +'px': height*0.25 + 'px'}" :disabled="disable">
             <span v-if="$slots.default" style="font-weight: bold;">
                 <slot></slot>
@@ -68,140 +68,140 @@ const data = defineProps({
 
 <style scoped>
 
-.default{
+.mt_button_default{
     background-color: white;
     border: 1px solid black;
     color: black;
     transition-duration: 0.4s;
 }
 
-.default:Hover{
+.mt_button_default:Hover{
     background-color: #66FFFF;
 }
 
-.primary{
+.mt_button_primary{
     background-color: #3399FF;
     border: 1px solid #0080FF;
     color: white;
     transition-duration: 0.4s;
 }
 
-.primary:hover{
+.mt_button_primary:hover{
     background-color: #66B2FF;
 }
 
-.success{
+.mt_button_success{
     background-color: #00FF00;
     border: 1px solid #00CC00;
     color: white;
     transition-duration: 0.4s;
 }
 
-.success:hover{
+.mt_button_success:hover{
     background-color: #99FF99;
 }
 
-.info{
+.mt_button_info{
     background-color: #808080;
     border: 1px solid gray;
     color: white;
     transition-duration: 0.4s;
 }
 
-.info:Hover{
+.mt_button_info:Hover{
     background-color: #A0A0A0;
 }
 
-.warning{
+.mt_button_warning{
     background-color: #80FF00;
     border: 1px solid #99FF33;
     color: white;
     transition-duration: 0.4s;
 }
 
-.warning:hover{
+.mt_button_warning:hover{
     background-color: #CCFF99;
 }
 
-.danger{
+.mt_button_danger{
     background-color: #FF3333;
     border: 1px solid #FF0000;
     color: white;
     transition-duration: 0.4s;
 }
 
-.danger:hover{
+.mt_button_danger:hover{
     background-color: #FF9999;
 }
 
-.defaultPlain{
+.mt_button_defaultPlain{
     background-color: white;
     border: 1px solid black;
     color: black;
     transition-duration: 0.4s;
 }
 
-.defaultPlain:Hover{
+.mt_button_defaultPlain:Hover{
     background-color: white;
     color : #66FFFF;
 }
 
-.primaryPlain{
+.mt_button_primaryPlain{
     background-color: white;
     border: 1px solid #0080FF;
     color: #66B2FF;
     transition-duration: 0.4s;
 }
 
-.primaryPlain:hover{
+.mt_button_primaryPlain:hover{
     background-color: #66B2FF;
     color: white;
 }
 
-.successPlain{
+.mt_button_successPlain{
     background-color: white;
     border: 1px solid #00CC00;
     color: #99FF99;
     transition-duration: 0.4s;
 }
 
-.successPlain:hover{
+.mt_button_successPlain:hover{
     background-color: #99FF99;
     color: white
 }
 
-.infoPlain{
+.mt_button_infoPlain{
     background-color: white;
     border: 1px solid gray;
     color: #A0A0A0;
     transition-duration: 0.4s;
 }
 
-.infoPlain:Hover{
+.mt_button_infoPlain:Hover{
     background-color: #A0A0A0;
     color: white
 }
 
-.warningPlain{
+.mt_button_warningPlain{
     background-color: white;
     border: 1px solid #99FF33;
     color: #CCFF99;
     transition-duration: 0.4s;
 }
 
-.warningPlain:hover{
+.mt_button_warningPlain:hover{
     background-color: #CCFF99;
     color: white
 }
 
-.dangerPlain{
+.mt_button_dangerPlain{
     background-color: white;
     border: 1px solid #FF0000;
     color: #FF9999;
     transition-duration: 0.4s;
 }
 
-.dangerPlain:hover{
+.mt_button_dangerPlain:hover{
     background-color: #FF9999;
     color: white
 }

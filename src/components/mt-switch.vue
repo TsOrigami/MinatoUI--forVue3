@@ -15,7 +15,7 @@
 
 import {ref, defineModel, defineProps, onMounted} from 'vue'
 
-const data = defineProps({
+const mt_switch_data = defineProps({
     height:{
         type: [Number, String],
         default: 30
@@ -43,7 +43,7 @@ const model = defineModel(  "isSwitch", {
         default: false,
 })
 
-const swtichState = () =>{
+const mt_switch_swtichState = () =>{
     if(model.value) {
         model.value = false
     } else { 
@@ -58,7 +58,7 @@ const swtichState = () =>{
         <div id="mt_switch_switch" 
             :style="{height: height +'px', width: width +'px', backgroundColor: color, borderRadius: height/2 + 'px',}"
             style="border: 2px solid black;"
-            @click="swtichState">
+            @click="mt_switch_swtichState">
             <div id="mt_switch_switchBall" 
                 :style="{'height': height*0.8 +'px', 'width': height*0.8 +'px','top': height*0.1+'px', 
                     'borderRadius': height*0.9 /2 + 'px', 'backgroundColor': ballColor,
@@ -71,7 +71,6 @@ const swtichState = () =>{
                 style="transition-duration: 0.5s">
             </div>
         </div>
-        <button @click="console.log(model)">testA</button>
     </div>
 </template>
 

@@ -16,7 +16,7 @@
 import { ref, defineProps, watch, toRefs } from 'vue'
 
 // 获取父组件传回的数据
-const data = defineProps({
+const mt_table_data = defineProps({
     thead: {
         type: Array,
         default: []
@@ -52,7 +52,7 @@ const data = defineProps({
 })
 
 // 监听tbody的变化，当tbody发生变化时，移动滚动条到最底部
-watch(() => data.tbody, () => {
+watch(() => mt_table_data.tbody, () => {
     setTimeout(() => {
         const tbodyDiv = document.getElementById('mt_table_tbodyDiv')
         tbodyDiv.scrollTop = tbodyDiv.scrollHeight
