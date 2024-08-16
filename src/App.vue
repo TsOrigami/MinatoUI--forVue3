@@ -13,6 +13,7 @@ import mt_switch from './components/mt-switch.vue'
 import mt_autocomplete from './components/mt-autocomplete.vue'
 import mt_checkbox from './components/mt-checkbox.vue'
 import mt_colorPicker from './components/mt-colorPicker.vue'
+import mt_slider from './components/mt_slider.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -116,6 +117,8 @@ const checkbox_test = ref()
 
 const slt_color = ref('')
 
+const mt_slider_data = ref(0)
+
 </script>
 
 <template>
@@ -146,10 +149,12 @@ const slt_color = ref('')
         <mt_checkbox v-model = "checkbox_test" style="top: 100px; left: 10px; position: absolute;" />
       <button @click="console.log(checkbox_test?'True':'False')">test</button>
     </div> -->
-     <div style="position: absolute; left: 100px; top: 100px;">
+    <!--<div style="position: absolute; left: 100px; top: 100px;">
       <mt_color-picker v-model="slt_color" RGBA></mt_color-picker>
       <button @click="console.log(slt_color)">Show</button>
-     </div>
+     </div> -->
+     <mt_slider v-model="mt_slider_data" style="position: absolute ; top: 100px; left: 50px;"></mt_slider>
+     <button @click="console.log(mt_slider_data)">test</button>
   </div>
   <!-- <div class="test"></div> -->
 </template>
