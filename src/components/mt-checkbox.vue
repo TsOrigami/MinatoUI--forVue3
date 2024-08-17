@@ -9,18 +9,18 @@
 //          双向绑定参数: v-model: Boolen, 是否选中, 默认为false
 
 
-import { defineModel, defineProps, ref, onMounted } from 'vue'
+import { defineModel, defineProps } from 'vue'
 
 const mt_checkbox_data = defineProps({
-    label:{
+    'label':{
         type:[Number,String],
         default: 'checkbox'
     },
-    height:{
+    'height':{
         type:Number,
         default:30,
     },
-    width:{
+    'width':{
         type:Number,
         default:100,
     }
@@ -62,12 +62,28 @@ const createTest = () =>{
 
 <template>
     <div>
-        <div id="mt_checkbox" :stnyle="{height: height+'px', width: width+'px'}" @click="createTest">
-            <div :id = "'mt_checkbox_box'+label" :style="{width: height +'px', height: height+'px', borderRadius: 
-                    height*0.25+'px', borderWidth: Math.floor(height / 20) + 1 + 'px'}"
+        <div id="mt_checkbox" 
+            :style="{
+                height: height+'px', 
+                width: width+'px'
+                }" 
+                @click="createTest">
+            <div :id = "'mt_checkbox_box'+label" 
+                :style="{
+                    width: mt_checkbox_data['height'] + 'px', 
+                    height: mt_checkbox_data['height'] + 'px', 
+                    borderRadius: mt_checkbox_data['height'] * 0.25 + 'px', 
+                    borderWidth: Math.floor( mt_checkbox_data['height'] / 20) + 1 + 'px'
+                }"
                 style="border-style: solid; border-color: black;"></div>
-            <div :id = "'mt_checkbox_data'+ label" :style="{height:height+'px', width:width-height - 5 +'px', left: height +5 +'px',
-                    lineHeight: height+'px', fontSize :height+'px'}"
+            <div :id = "'mt_checkbox_data'+ label" 
+                :style="{
+                    height: mt_checkbox_data['height']+'px', 
+                    width: mt_checkbox_data['width'] - mt_checkbox_data['height'] - 5 +'px', 
+                    left: mt_checkbox_data['height'] + 5 + 'px',
+                    lineHeight: mt_checkbox_data['height'] +'px', 
+                    fontSize : mt_checkbox_data['height+'] + 'px'
+                }"
                 style="top: 0px; position: absolute; user-select: none;">{{ label }}</div>
         </div>
     </div>

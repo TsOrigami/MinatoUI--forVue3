@@ -13,41 +13,41 @@
 //[Script] const isSwitch = ref(true)
 //[HTML] <mt_switch v-model:isSwitch="isSwitch"/>
 
-import {ref, defineModel, defineProps, onMounted} from 'vue'
+import {defineModel, defineProps} from 'vue'
 
 const mt_switch_data = defineProps({
-    height:{
+    'height':{
         type: [Number, String],
         default: 30
     },
-    width:{
+    'width':{
         type: [Number, String],
         default: 100
     },
-    color:{
+    'color':{
         type: String,
         default: "white"
     },
-    ballColor:{
+    'ballColor':{
         type: String,
         default: "skyblue"
     },
-    colorOn: {
+    'colorOn': {
         type: String,
         default: "yellowgreen"
     }
 })
 
-const model = defineModel(  "isSwitch", {
+const mt_switch_model = defineModel(  "isSwitch", {
         type: Boolean ,
         default: false,
 })
 
 const mt_switch_swtichState = () =>{
-    if(model.value) {
-        model.value = false
+    if(mt_switch_model.value) {
+        mt_switch_model.value = false
     } else { 
-        model.value = true
+        mt_switch_model.value = true
     }
 }
 
@@ -56,18 +56,32 @@ const mt_switch_swtichState = () =>{
 <template>
     <div>
         <div id="mt_switch_switch" 
-            :style="{height: height +'px', width: width +'px', backgroundColor: color, borderRadius: height/2 + 'px',}"
+            :style="{
+                height: mt_switch_data['height'] +'px', 
+                width: mt_switch_data['width'] +'px', 
+                backgroundColor: mt_switch_data['color'], 
+                borderRadius: mt_switch_data['height'] / 2 + 'px',
+            }"
             style="border: 2px solid black;"
             @click="mt_switch_swtichState">
             <div id="mt_switch_switchBall" 
-                :style="{'height': height*0.8 +'px', 'width': height*0.8 +'px','top': height*0.1+'px', 
-                    'borderRadius': height*0.9 /2 + 'px', 'backgroundColor': ballColor,
-                    'left':model? width-height+3+'px' : '3px'}"
+                :style="{
+                    'height': mt_switch_data['height'] * 0.8 + 'px', 
+                    'width': mt_switch_data['height'] * 0.8 + 'px',
+                    'top': mt_switch_data['height'] * 0.1 + 'px', 
+                    'borderRadius': mt_switch_data['height'] * 0.9 /2 + 'px', 
+                    'backgroundColor': mt_switch_data['ballColor'],
+                    'left': mt_switch_model? mt_switch_data['width']-mt_switch_data['height']+3+'px' : '3px'
+                    }"
                 style="border: 1px solid black; position: absolute;transition-duration: 0.5s">
             </div>
             <div id="mt_switch_switchBack"
-                :style="{'height': height-4 +'px', 'backgroundColor': colorOn, 'borderRadius': height/2 + 'px',
-                     width: model? width-4 +'px': height-3 +'px'}"
+                :style="{
+                    'height': mt_switch_data['height'] - 4 +'px', 
+                    'backgroundColor': mt_switch_data['colorOn'], 
+                    'borderRadius': mt_switch_data['height'] / 2 + 'px',
+                    width: mt_switch_model? mt_switch_data['width']-4 +'px': mt_switch_data['height'] - 3 +'px'
+                }"
                 style="transition-duration: 0.5s">
             </div>
         </div>

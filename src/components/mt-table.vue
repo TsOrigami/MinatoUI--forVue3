@@ -13,39 +13,39 @@
 //    tbodyColorS: 表体奇数项背景颜色，类型为字符串，默认为#E0E0E0(较浅的灰色)
 //    tbodyColorE: 表体偶数项背景颜色，类型为字符串，默认为白色
 
-import { ref, defineProps, watch, toRefs } from 'vue'
+import { defineProps, watch } from 'vue'
 
 // 获取父组件传回的数据
 const mt_table_data = defineProps({
-    thead: {
+    'thead': {
         type: Array,
         default: []
     },
-    tbody: {
+    'tbody': {
         type: Array,
         default: []
     },
-    width: {
+    'width': {
         type: Number,
         default: 200
     },
-    height: {
+    'height': {
         type: Number,
         default: 200
     },
-    Color: {
+    'Color': {
         type: String,
         default: 'white'
     },
-    theadColor: {
+    'theadColor': {
         type: String,
         default: 'white'
     },
-    tbodyColorS: {
+    'tbodyColorS': {
         type: String,
         default: '#E0E0E0'
     },
-    tbodyColorE: {
+    'tbodyColorE': {
         type: String,
         default: 'white'
     },
@@ -63,16 +63,26 @@ watch(() => mt_table_data.tbody, () => {
 </script>
 
 <template>
-    <div :style="{ backgroundColor: Color, width: width + 'px', height: height + 'px' }">
-        <div :style="{ backgroundColor: Color }">
-            <table :style="{
-                backgroundColor: Color
+    <div :style="{
+            backgroundColor: mt_table_data['Color'],
+            width: mt_table_data['width'] + 'px',
+            height: mt_table_data['height'] + 'px' 
+        }">
+        <div :style="{
+            backgroundColor: mt_table_data['Color']
             }">
+            <table :style="{
+                    backgroundColor: mt_table_data['Color']
+                }">
                 <thead>
                     <tr>
                         <!-- 遍历thead，生成表头 -->
-                        <th v-for="head in thead"
-                            :style="{ width: (width - 10) / thead.length + 'px', backgroundColor: theadColor, height: '20px', padding: '0' }">
+                        <th v-for="head in mt_table_data['thead']"
+                            :style="{
+                                width: (mt_table_data['width'] - 10) / mt_table_data['thead'].length + 'px',
+                                backgroundColor: mt_table_data['theadColor'], 
+                                height: '20px', 
+                                padding: '0' }">
                             {{ head }}
                         </th>
                     </tr>
@@ -80,16 +90,27 @@ watch(() => mt_table_data.tbody, () => {
             </table>
         </div>
         <div id="mt_table_tbodyDiv"
-            :style="{ height: (height - 20) + 'px', overflowY: 'scroll', overflowX: 'hidden', backgroundColor: Color, width: width + 'px' }">
+            :style="{
+                height: (mt_table_data['height'] - 20) + 'px', 
+                overflowY: 'scroll', 
+                overflowX: 'hidden', 
+                backgroundColor: mt_table_data['Color'], 
+                width: mt_table_data['width'] + 'px' 
+            }">
             <table>
                 <tbody>
-                    <!-- 遍历tbody，生成表格内容 -->
-
-                    <tr v-for="item in tbody.length"
-                        :style="{ backgroundColor: item % 2 == 0 ? tbodyColorE : tbodyColorS, padding: '0' }">
-                        <td v-for="head in thead"
-                            :style="{ width: width / thead.length + 'px', height: '20px', padding: '0' }">
-                            {{ tbody[item - 1][head] }}
+                    <tr v-for="item in mt_table_data['tbody'].length"
+                        :style="{ 
+                            backgroundColor: item % 2 == 0 ? mt_table_data['tbodyColorE'] : mt_table_data['tbodyColorS'], 
+                            padding: '0' 
+                        }">
+                        <td v-for="head in mt_table_data['thead']"
+                            :style="{
+                                width: mt_table_data['width'] / mt_table_data['thead'].length + 'px',
+                                height: '20px',
+                                padding: '0' 
+                            }">
+                            {{ mt_table_data['tbody'][item - 1][head] }}
                         </td>
                     </tr>
                 </tbody>

@@ -23,47 +23,47 @@
 
 import { defineModel, defineProps, ref, onMounted } from 'vue'
 const mt_select_data = defineProps({
-    options: {
+    'options': {
         type: Array,
         default: []
     },
-    width: {
+    'width': {
         type: Number,
         default: 200
     },
-    height: {
+    'height': {
         type: Number,
         default: 60
     },
-    display:{
+    'display':{
         type: Number,
         default: 5
     },
-    alt:{
+    'alt':{
         type: String,
         default: "Select"
     },
-    default: {
+    'default': {
         type: String,
         default: true
     },
-    startTime:{
+    'startTime':{
         type: String,
         default: '00:00'
     },
-    endTime:{
+    'endTime':{
         type: String,
         default: '24:00'
     },
-    step:{
+    'step':{
         type: Number,
         default: 15
     },
-    time:{
+    'time':{
         type: Boolean,
         default: false
     },
-    date:{
+    'date':{
         type: Boolean,
         default: false
     },
@@ -540,14 +540,31 @@ const mt_select_colorLow = () =>{
 </script>
 
 <template>
-    <div  :style="{height: height +'px', width: width +'px'}">
+    <div  :style="{
+                height: mt_select_data['height'] +'px', 
+            width: mt_select_data['width'] +'px'
+            }">
         <div id="mt_select_ColorExcMain" class="mt_select_Select" @click="mt_select_create" 
-            @mouseover="mt_select_colorHigh" @mouseleave="mt_select_colorLow" v-click-outside="mt_select_delect">
-            <div id="mt_select_Selected" class="mt_select_Selected" :style="{height: height*0.6+'px', lineHeight: height*0.6+'px'}">
-                {{ mt_select_show }}
+            @mouseover="mt_select_colorHigh" 
+            @mouseleave="mt_select_colorLow" 
+            v-click-outside="mt_select_delect">
+            <div id="mt_select_Selected" class="mt_select_Selected" 
+                :style="{
+                    height: mt_select_data['height'] * 0.6 + 'px', 
+                    lineHeight: mt_select_data['height'] * 0.6 + 'px'
+                }">{{ mt_select_show }}
             </div>
-            <div id="mt_select_Arrow" class="mt_select_RotateArrow" :style="{height: height * 0.3+'px', width: height * 0.3+'px'}">
-                <div id="mt_select_ColorExcArrow" class="mt_select_Arrow" :style="{height: height*0.3+'px', width: height*0.3+'px' ,top: '20%'}" />
+            <div id="mt_select_Arrow" class="mt_select_RotateArrow" 
+                :style="{
+                    height: mt_select_data['height'] * 0.3+'px', 
+                    width: mt_select_data['height'] * 0.3+'px'
+                }">
+                <div id="mt_select_ColorExcArrow" class="mt_select_Arrow" 
+                    :style="{
+                        height: mt_select_data['height'] * 0.3 + 'px', 
+                        width: mt_select_data['height'] * 0.3 + 'px' ,
+                        top: '20%'
+                    }"/>
             </div>
         </div>
     </div>

@@ -466,54 +466,70 @@ const mt_colorPicker_removeGetRgbaAtTrans = () =>{
             :style="{
                 height: mt_colorPicker_main_height, 
                 width: mt_colorPicker_main_width
-                }">
+            }">
         <div id="mt_colorPicker_colorPickerButton" style="position: relative; transition-duration: 0.5s;"
             :style="{
-                height: height +'px', width: width +'px', zIndex: zindex + 2 
-                }"
+                height: mt_colorPicker_data['height'] +'px', 
+                width: mt_colorPicker_data['width'] +'px', 
+                zIndex: mt_colorPicker_data['zindex'] + 2 
+            }"
             @click="mt_colorPicker_excColorPicker" v-click-outside="mt_colorPicker_offColorPicker">
             <div style="position: absolute; width: 70px;user-select: none;"
                 :style="{
-                    left: height*0.25+'px',height: height*2/3 +'px' ,
-                    lineHeight: height*2/3 +'px', top: height/6 +'px',
-                    fontSize: height/2 +'px'
-                    }">选择颜色 :</div>
+                    left: mt_colorPicker_data['height'] * 0.25 + 'px',
+                    height: mt_colorPicker_data['height'] * 2/3 + 'px' ,
+                    lineHeight: mt_colorPicker_data['height'] * 2/3 +'px', 
+                    top: mt_colorPicker_data['height'] / 6 + 'px',
+                    fontSize: mt_colorPicker_data['height'] / 2 + 'px'
+                }">选择颜色 :</div>
             <div style="position: absolute; font-weight: bold;"
                 :style="{
-                    left: height / 2 * 5 + 2  +'px',
-                    width: width * 0.6 + 'px', 
-                    height: height*2/3 +'px',
-                    fontSize: height/2 +'px',
-                    lineHeight: height*2/3 +'px', top: height/6 +'px'
-                    }" >{{ mt_colorPicker_color }}</div>
+                    left: mt_colorPicker_data['height'] / 2 * 5 + 2  + 'px',
+                    width: mt_colorPicker_data['width'] * 0.6 + 'px', 
+                    height: mt_colorPicker_data['height'] * 2/3 + 'px',
+                    fontSize: mt_colorPicker_data['height'] / 2 + 'px',
+                    lineHeight: mt_colorPicker_data['height'] * 2/3 + 'px', 
+                    top: mt_colorPicker_data['height'] / 6 + 'px'
+                }" >{{ mt_colorPicker_color }}</div>
             <div id="mt_colorPicker_colorBack" class="mt_colorPicker_colorBack"
                     :style="{
-                        left: width*0.9 +'px', top: height/6 +'px', height: height*2/3 +'px', width: height*2/3 +'px',
-                        backgroundPosition: `0 0, 0 ${height/8}px, ${height/8}px -${height/8}px, -${height/8}px 0`,
-                        backgroundSize: `${height/4}px ${height/4}px`
+                        left: width*0.9 +'px', 
+                        top: height/6 +'px', 
+                        height: height*2/3 +'px', 
+                        width: height*2/3 +'px',
+                        backgroundPosition: `0 0, 0 ${ mt_colorPicker_data['height'] / 8}px, ${mt_colorPicker_data['height']/8}px -${mt_colorPicker_data['height']/8}px, -${mt_colorPicker_data['height']/8}px 0`,
+                        backgroundSize: `${mt_colorPicker_data['height'] / 4}px ${mt_colorPicker_data['height'] / 4}px`
                         }"></div>
             <div id="mt_colorPicker_colorShow" style="position: absolute; border: 2px solid black;"
                     :style="{
                         borderWidth: mt_colorPicker_boardWidth,
-                        left: width*0.9 +'px', top: height/6 +'px', height: height*2/3 +'px', width: height*2/3 +'px',
+                        left: mt_colorPicker_data['width'] * 0.9 + 'px', 
+                        top: mt_colorPicker_data['height'] / 6 + 'px', 
+                        height: mt_colorPicker_data['height'] * 2/3 + 'px', 
+                        width: mt_colorPicker_data['height'] * 2/3 + 'px',
                         backgroundColor: mt_colorPicker_button_showColor
-                        }"></div>
+                    }"></div>
         </div>
         <div id="mt_colorPicker_colorPicker" class="mt_colorPicker_mainboard" @click="mt_colorPicker_stopHidden = true"
             style="position: relative;"
             :style="{
-                height: mt_colorPicker_mainboard_height, width:mt_colorPicker_mainboard_width, borderRadius: height*0.25+'px',
-                visibility: mt_colorPicker_mainboard_visible, zIndex: zindex + 1, top: -height+'px'
-                }">
+                height: mt_colorPicker_mainboard_height, 
+                width: mt_colorPicker_mainboard_width, 
+                borderRadius: mt_colorPicker_data['height'] * 0.25 + 'px',
+                visibility: mt_colorPicker_mainboard_visible, 
+                zIndex: mt_colorPicker_data['zindex'] + 1, 
+                top: -mt_colorPicker_data['height'] + 'px'
+            }">
             <canvas id="mt_colorPicker_canvasBox"></canvas>
             <div id="mt_colorPicker_sltBox" style="border: 2px solid black; position: absolute; "
                 :style="{
                     borderWidth: mt_colorPicker_boardWidth,
                     width: mt_colorPicker_canvasSize / 30 +'px' , 
                     height: mt_colorPicker_canvasSize / 30 +'px',
-                    left: mt_colorPicker_sltBox_left, top: mt_colorPicker_sltBox_top, 
+                    left: mt_colorPicker_sltBox_left, 
+                    top: mt_colorPicker_sltBox_top, 
                     borderColor: mt_colorPicker_sltBox_borderColor 
-                    }"></div>
+                }"></div>
             <div id="mt_colorPicker_hoverBox" 
                 style="border: 1px solid black; background-color: rgba(0, 0, 0, 0); position: absolute;"
                 :style="{
@@ -551,11 +567,14 @@ const mt_colorPicker_removeGetRgbaAtTrans = () =>{
                 left: mt_colorPicker_canvasSize * 2/30 + 1 +'px',
                 width: mt_colorPicker_canvasSize * 2/3 +'px',
                 height: mt_colorPicker_canvasSize * 2/30 +'px',
-                backgroundPosition: `0 0, 0 ${height/8}px, ${height/8}px -${height/8}px, -${height/8}px 0`,
-                backgroundSize: `${height/4}px ${height/4}px`,
-                visibility: RGBA ? '' : 'hidden'
+                backgroundPosition: `0 0, 0 ${mt_colorPicker_data['height']/8}px, ${mt_colorPicker_data['height']/8}px -${mt_colorPicker_data['height']/8}px, -${mt_colorPicker_data['height']/8}px 0`,
+                backgroundSize: `${mt_colorPicker_data['height']/4}px ${mt_colorPicker_data['height']/4}px`,
+                visibility: mt_colorPicker_data['RGBA'] ? '' : 'hidden'
             }"></div>
-            <canvas id="mt_colorPicker_canvasTrans" :style="{visibility: RGBA ? '' : 'hidden'}"></canvas>
+            <canvas id="mt_colorPicker_canvasTrans" 
+            :style="{
+                visibility: mt_colorPicker_data['RGBA'] ? '' : 'hidden'
+            }"></canvas>
             <div id="mt_colorPicker_sltTrans" style="position: absolute; border: 2px solid black;"
                 :style="{
                     borderWidth: mt_colorPicker_boardWidth,
@@ -564,7 +583,7 @@ const mt_colorPicker_removeGetRgbaAtTrans = () =>{
                     width: mt_colorPicker_canvasSize / 50 +'px',
                     left: mt_colorPicker_sltTrans_left,
                     borderColor: mt_colorPicker_borderColor,
-                    visibility: RGBA ? '' : 'hidden'
+                    visibility: mt_colorPicker_data['RGBA'] ? '' : 'hidden'
                 }"></div>
             <div id="mt_colorPicker_hoverTrans" style="position: absolute; background-color: rgba(0, 0, 0, 0);"
                 :style="{
@@ -572,7 +591,7 @@ const mt_colorPicker_removeGetRgbaAtTrans = () =>{
                     left: mt_colorPicker_canvasSize * 2/30 + 1 +'px',
                     width: mt_colorPicker_canvasSize * 2/3 +'px',
                     height: mt_colorPicker_canvasSize * 2/30 +'px',
-                    visibility: RGBA ? '' : 'hidden'
+                    visibility: mt_colorPicker_data['RGBA'] ? '' : 'hidden'
                 }"
                 @mousedown="mt_colorPicker_getRgbaAtTrans" 
                 @mouseup="mt_colorPicker_removeGetRgbaAtTrans" 
@@ -580,7 +599,12 @@ const mt_colorPicker_removeGetRgbaAtTrans = () =>{
         </div>
         <div id="mt_colorPicker_cpButtonBorder" style="position: absolute; top: 0px; 
                 transition-duration: 0.5s; border: 2px solid blue;"
-            :style="{height: mt_colorPicker_board_height, width: mt_colorPicker_board_width, zIndex: zindex, borderRadius: height*0.25+'px' }"></div>
+            :style="{
+                height: mt_colorPicker_board_height, 
+                width: mt_colorPicker_board_width, 
+                zIndex: mt_colorPicker_data['zindex'], 
+                borderRadius: mt_colorPicker_data['height'] * 0.25 + 'px' 
+            }"></div>
     </div>
 </template>
 

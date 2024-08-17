@@ -23,30 +23,30 @@
 //   <mt-button type="primary" round>按钮</mt-button>
 //   <mt-button type="success" disable>按钮</mt-button>
 
-import { ref, defineProps, watch, onMounted, nextTick } from 'vue'
+import { defineProps } from 'vue'
 
 const mt_button_data = defineProps({
-    disable: {
+    'disable': {
         type: Boolean,
         default: false
     },
-    height: {
+    'height': {
         type: [Number, String],
         default :100
     },
-    width: {
+    'width': {
         type: [Number, String],
         default: 40
     },
-    type: {
+    'type': {
         type: String,
         default: "default"
     },
-    round:{
+    'round':{
         type: Boolean,
         default: false
     },
-    plain:{
+    'plain':{
         type: Boolean,
         default: false
     }
@@ -57,8 +57,12 @@ const mt_button_data = defineProps({
 <template>
     <div>
         <button id="mt_button_Button" 
-            :class ="'mt_button_' + plain ? type + 'Plain' : type" :style="{'height': height+'px', 'width':width+'px', 
-                'borderRadius': round? height*5 +'px': height*0.25 + 'px'}" :disabled="disable">
+            :class ="'mt_button_' + plain ? type + 'Plain' : type" 
+            :style="{
+                'height': mt_button_data['height'] + 'px', 
+                'width': mt_button_data['width'] + 'px', 
+                'borderRadius': mt_button_data['round'] ? mt_button_data['height'] * 5 +'px': mt_button_data['height'] * 0.25 + 'px'
+            }" :disabled="disable">
             <span v-if="$slots.default" style="font-weight: bold;">
                 <slot></slot>
             </span>

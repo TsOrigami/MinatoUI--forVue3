@@ -13,23 +13,23 @@
 //          <mt-autocomplete :options="options" :height="height" :width="width" :display="display" ></mt-autocomplete>
 
 
-import {ref, defineProps, defineModel, onMounted, watch} from 'vue'
+import { defineProps, defineModel } from 'vue'
 
 
 const mt_autocomple_data = defineProps({
-    options: {
+    'options': {
         type: Array,
         default: []
     },
-    height: {
+    'height': {
         type: Number,
         default: 40,
     },
-    width: {
+    'width': {
         type: Number,
         default: 200,
     },
-    display: {
+    'display': {
         type: Number,
         default: 5,
     }
@@ -40,7 +40,7 @@ const mt_autocomple_messages = defineModel({
     default: '',
 })
 
-const updateMessage = (event) => {
+const mt_autocomple_data_updateMessage = (event) => {
     mt_autocomple_messages.value = event.target.value; 
     mt_autocomple_createCompleteItem(event.target.value)
 };
@@ -137,8 +137,15 @@ const vClickOutside = {
 <template>
     <div>
         <input id="mt_autocomple_input" class="mt_autocomple_input" :value="mt_autocomple_messages" type="text" autocomplete="off" 
-        @input="updateMessage" @click="updateMessage" v-click-outside="mt_autocomple_autoCompleteDelect" 
-        :style="{height: height+'px', width: width+'px', borderRadius: height*0.25+'px', textIndent: height*0.25+'px'}" />
+            @input="mt_autocomple_data_updateMessage" 
+            @click="mt_autocomple_data_updateMessage" 
+            v-click-outside="mt_autocomple_autoCompleteDelect" 
+            :style="{
+                height: mt_autocomple_data['height'] + 'px', 
+                width: mt_autocomple_data['width'] +'px', 
+                borderRadius: mt_autocomple_data['height'] * 0.25 + 'px', 
+                textIndent: mt_autocomple_data['height'] * 0.25 + 'px'
+            }" />
     </div>
 </template>
 
@@ -149,7 +156,6 @@ const vClickOutside = {
     left: 0;
     width: 10;
 }
-
 
 .mt_autocomple_input{
     border: 2px solid skyblue;

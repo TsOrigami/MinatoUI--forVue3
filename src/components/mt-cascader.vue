@@ -15,27 +15,27 @@
 import { ref, defineProps, watch, onMounted, defineModel } from 'vue'
 
 const mt_cascader_data = defineProps({
-    defaultNode: {
+    'defaultNode': {
         type:String,
         default:"Cascader"
     },
-    width:{
+    'width':{
         type:Number,
         default:200
     },
-    height:{
+    'height':{
         type:Number,
         default: 50
     },
-    multiple:{
+    'multiple':{
         type: Boolean,
         default: false
     },
-    display: {
+    'display': {
         type: Number,
         default: 4
     },
-    options: {
+    'options': {
         type: Array,
         default: []
     }
@@ -260,11 +260,22 @@ const vClickOutside = {
     <div :style="{width: width+'px',height: height+'px'}">
         <div id="mt_cascader_ColorExcMain" class="mt_cascader_Cascader" @click="mt_cascader_create" 
         @mouseover="mt_cascader_colorHigh" @mouseleave="mt_cascader_colorLow" v-click-outside="mt_cascader_delect">
-            <div id="mt_cascader_Selected" class="mt_cascader_Selected" :style="{height: height*0.6+'px', lineHeight: height*0.6+'px'}">
-                {{mt_cascader_Node}}
+            <div id="mt_cascader_Selected" class="mt_cascader_Selected" 
+                :style="{
+                    height: height*0.6+'px', lineHeight: height*0.6+'px'
+                }">{{mt_cascader_Node}}
             </div>
-            <div id="mt_cascader_Arrow" class="mt_cascader_RotateArrow" :style="{height: height * 0.3+'px', width: height * 0.3+'px'}">
-                <div id="mt_cascader_ColorExcArrow" class="mt_cascader_Arrow" :style="{height: height*0.3+'px', width: height*0.3+'px' ,top: '20%'}" />
+            <div id="mt_cascader_Arrow" class="mt_cascader_RotateArrow" 
+                :style="{
+                        height: mt_cascader_data['height'] * 0.3+'px', 
+                        width: mt_cascader_data['height'] * 0.3+'px'
+                    }">
+                <div id="mt_cascader_ColorExcArrow" class="mt_cascader_Arrow" 
+                    :style="{
+                        height: mt_cascader_data['height'] * 0.3+'px', 
+                        width: mt_cascader_data['height'] * 0.3+'px' ,
+                        top: '20%'
+                    }" />
             </div>
         </div>
     </div>
