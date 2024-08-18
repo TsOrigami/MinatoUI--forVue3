@@ -62,13 +62,13 @@ const createTest = () =>{
 
 <template>
     <div>
-        <div id="mt_checkbox" 
+        <div id="mt_checkbox" class="mt_checkbox"
             :style="{
                 height: height+'px', 
                 width: width+'px'
                 }" 
                 @click="createTest">
-            <div :id = "'mt_checkbox_box'+label" 
+            <div :id = "'mt_checkbox_box' + mt_checkbox_data['label']" 
                 :style="{
                     width: mt_checkbox_data['height'] + 'px', 
                     height: mt_checkbox_data['height'] + 'px', 
@@ -76,7 +76,7 @@ const createTest = () =>{
                     borderWidth: Math.floor( mt_checkbox_data['height'] / 20) + 1 + 'px'
                 }"
                 style="border-style: solid; border-color: black;"></div>
-            <div :id = "'mt_checkbox_data'+ label" 
+            <div :id = "'mt_checkbox_data'+ mt_checkbox_data['label']" 
                 :style="{
                     height: mt_checkbox_data['height']+'px', 
                     width: mt_checkbox_data['width'] - mt_checkbox_data['height'] - 5 +'px', 

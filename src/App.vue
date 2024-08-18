@@ -12,6 +12,7 @@ import mt_button from './components/mt-button.vue'
 import mt_switch from './components/mt-switch.vue'
 import mt_autocomplete from './components/mt-autocomplete.vue'
 import mt_checkbox from './components/mt-checkbox.vue'
+import mt_checkbox_group from './components/mt-checkbox-group.vue'
 import mt_colorPicker from './components/mt-colorPicker.vue'
 import mt_slider from './components/mt-slider.vue'
 import axios from 'axios'
@@ -113,7 +114,16 @@ const message = ref('test')
 //   console.log(message.value)
 // }
 
-const checkbox_test = ref()
+const checkbox_test01 = ref()
+const checkbox_test02 = ref()
+const checkbox_test03 = ref()
+const checkbox_test04 = ref()
+
+const checkbox_group_slt = ref([])
+
+const ShowCheakBoxGroup = () =>{
+  console.log('slt', checkbox_group_slt.value)
+}
 
 const slt_color = ref('')
 
@@ -146,8 +156,14 @@ const mt_slider_data = ref(0)
       <button @click="console.log(message)">Test</button>
      </div> -->
      <div>
-        <mt_checkbox v-model = "checkbox_test" style="top: 100px; left: 10px; position: absolute;" />
-      <button @click="console.log(checkbox_test?'True':'False')">test</button>
+      <mt_checkbox_group v-model = "checkbox_group_slt">
+        <mt_checkbox label="A" v-model = "checkbox_test01" style=" position: relative; margin: 2px;" />
+        <mt_checkbox label="B" v-model = "checkbox_test02" style=" position: relative; margin: 2px;" />
+        <mt_checkbox label="C" v-model = "checkbox_test03" style=" position: relative; margin: 2px;" />
+      </mt_checkbox_group>
+      <mt_checkbox label="D" v-model = "checkbox_test04" style=" position: relative;" />
+      <button @click="ShowCheakBoxGroup">ShowCheakBoxGroup</button>
+      <!-- <button @click="console.log(checkbox_test?'True':'False')">test</button> -->
     </div>
     <!--<div style="position: absolute; left: 100px; top: 100px;">
       <mt_color-picker v-model="slt_color" RGBA></mt_color-picker>
