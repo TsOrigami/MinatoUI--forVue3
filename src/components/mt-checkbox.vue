@@ -31,7 +31,7 @@ const mt_checkbox_isSelect = defineModel({
     default: false
 })
 
-const createTest = () =>{
+const mt_checkbox_create = () =>{
     if(mt_checkbox_isSelect.value){
         const element = document.getElementById("mt_checkbox_box" + mt_checkbox_data.label)
         const right = document.getElementById("mt_checkbox_arrow" + mt_checkbox_data.label)
@@ -64,10 +64,11 @@ const createTest = () =>{
     <div>
         <div id="mt_checkbox" class="mt_checkbox"
             :style="{
+                position: 'relative',
                 height: height+'px', 
                 width: width+'px'
                 }" 
-                @click="createTest">
+                @click="mt_checkbox_create">
             <div :id = "'mt_checkbox_box' + mt_checkbox_data['label']" 
                 :style="{
                     width: mt_checkbox_data['height'] + 'px', 
@@ -90,27 +91,5 @@ const createTest = () =>{
 </template>
 
 <style scoped>
-
-.right {
-  width: 28px;
-  height: 28px;
-  line-height: 26px;
-  border: 1px solid #025299;
-  background-color: #025299;
-  position: relative;
-  cursor: pointer;
-}
-
-.right::before {
-  position: absolute;
-  content: " ";
-  width: 7px;
-  height: 13px;
-  transform: rotate(45deg);
-  border-right: 2px solid #fff;
-  border-bottom: 2px solid #fff;
-  top: 4px;
-  left: 9px;
-}
 
 </style>

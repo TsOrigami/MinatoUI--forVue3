@@ -15,6 +15,8 @@ import mt_checkbox from './components/mt-checkbox.vue'
 import mt_checkbox_group from './components/mt-checkbox-group.vue'
 import mt_colorPicker from './components/mt-colorPicker.vue'
 import mt_slider from './components/mt-slider.vue'
+import mt_radio from './components/mt-radio.vue'
+import mt_radio_group from './components/mt-radio-group.vue'
 import axios from 'axios'
 
 const data = ref([])
@@ -129,6 +131,8 @@ const slt_color = ref('')
 
 const mt_slider_data = ref(0)
 
+const mt_radio_group_data = ref(null)
+
 </script>
 
 <template>
@@ -155,22 +159,28 @@ const mt_slider_data = ref(0)
         <mt_autocomplete :options="autoOptions" v-model="message"  />
       <button @click="console.log(message)">Test</button>
      </div> -->
-     <div>
+     <!-- <div>
       <mt_checkbox_group v-model = "checkbox_group_slt">
-        <mt_checkbox label="A" v-model = "checkbox_test01" style=" position: relative; margin: 2px;" />
-        <mt_checkbox label="B" v-model = "checkbox_test02" style=" position: relative; margin: 2px;" />
-        <mt_checkbox label="C" v-model = "checkbox_test03" style=" position: relative; margin: 2px;" />
+        <mt_checkbox label="A" v-model = "checkbox_test01" style="  margin: 2px;" />
+        <mt_checkbox label="B" v-model = "checkbox_test02" style="  margin: 2px;" />
+        <mt_checkbox label="C" v-model = "checkbox_test03" style="  margin: 2px;" />
       </mt_checkbox_group>
       <mt_checkbox label="D" v-model = "checkbox_test04" style=" position: relative;" />
       <button @click="ShowCheakBoxGroup">ShowCheakBoxGroup</button>
-      <!-- <button @click="console.log(checkbox_test?'True':'False')">test</button> -->
-    </div>
+      <button @click="console.log(checkbox_test?'True':'False')">test</button>
+    </div> -->
     <!--<div style="position: absolute; left: 100px; top: 100px;">
       <mt_color-picker v-model="slt_color" RGBA></mt_color-picker>
       <button @click="console.log(slt_color)">Show</button>
      </div> -->
      <!-- <mt_slider v-model="mt_slider_data" style="position: absolute ; top: 100px; left: 50px;"></mt_slider>
      <button @click="console.log(mt_slider_data)">test</button> -->
+     <mt_radio_group v-model = "mt_radio_group_data">
+      <mt_radio label="test01" style="margin: 10px;"></mt_radio>
+      <mt_radio label="test02" style="margin: 10px;"></mt_radio>
+      <mt_radio label="test03" style="margin: 10px;"></mt_radio>
+     </mt_radio_group>
+     <button @click="console.log(mt_radio_group_data)">TEST</button>
   </div>
   <!-- <div class="test"></div> -->
 </template>
