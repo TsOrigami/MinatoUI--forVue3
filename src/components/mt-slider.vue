@@ -9,6 +9,9 @@
 //      sltColor: String，滑块选中部分颜色 / 滑块浮标边框颜色，默认skyblue
 //      双向绑定参数: v-model: Number, 选中部分占比，范围为0-100，保留整数
 
+//2024/8/20 打黑猴 给自己放一天假
+//          明天写分段
+
 import {ref, defineProps, defineModel, onMounted, watch} from 'vue'
 
 const mt_slider_data = defineProps({
@@ -27,6 +30,10 @@ const mt_slider_data = defineProps({
     'sltColor':{
         type: String,
         default: 'skyblue'
+    },
+    'point': {
+        type: Number,
+        default: 0
     }
 })
 

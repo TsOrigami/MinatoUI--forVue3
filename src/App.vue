@@ -173,14 +173,14 @@ const mt_radio_group_data = ref(null)
       <mt_color-picker v-model="slt_color" RGBA></mt_color-picker>
       <button @click="console.log(slt_color)">Show</button>
      </div> -->
-     <!-- <mt_slider v-model="mt_slider_data" style="position: absolute ; top: 100px; left: 50px;"></mt_slider>
-     <button @click="console.log(mt_slider_data)">test</button> -->
-     <mt_radio_group v-model = "mt_radio_group_data">
+     <mt_slider v-model="mt_slider_data" style="position: absolute ; top: 100px; left: 50px;"></mt_slider>
+     <button @click="console.log(mt_slider_data)">test</button>
+     <!-- <mt_radio_group v-model = "mt_radio_group_data">
       <mt_radio label="test01" style="margin: 10px;"></mt_radio>
       <mt_radio label="test02" style="margin: 10px;"></mt_radio>
       <mt_radio label="test03" style="margin: 10px;"></mt_radio>
      </mt_radio_group>
-     <button @click="console.log(mt_radio_group_data)">TEST</button>
+     <button @click="console.log(mt_radio_group_data)">TEST</button> -->
   </div>
   <!-- <div class="test"></div> -->
 </template>
