@@ -7,10 +7,9 @@
 //      height: Number，高度，默认10
 //      color: String，滑块颜色，默认gray
 //      sltColor: String，滑块选中部分颜色 / 滑块浮标边框颜色，默认skyblue
+//      point: Number, 固定点的数量, 会将滑块均分。
 //      双向绑定参数: v-model: Number, 选中部分占比，范围为0-100，保留整数
 
-//2024/8/20 打黑猴 给自己放一天假
-//          明天写分段
 
 import {ref, defineProps, defineModel, onMounted, watch} from 'vue'
 
@@ -33,7 +32,7 @@ const mt_slider_data = defineProps({
     },
     'point': {
         type: Number,
-        default: 0
+        default: 4
     }
 })
 
@@ -43,6 +42,7 @@ const mt_slider_sltData = defineModel({
 })
 
 const mt_slider_length = ref(0)
+const mt_slider_pointNum = ref(0)
 
 const mt_slider_pushSilder = () =>{
     const body = document.body
@@ -52,14 +52,26 @@ const mt_slider_pushSilder = () =>{
 
 const mt_slider_moveSilder = (event) =>{
     let pos = event.x
-    let len = document.getElementById('mt_slider_main').offsetLeft + mt_slider_data['height'] / 2 
-    mt_slider_length.value = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
-    if(mt_slider_length.value > 100){
-        mt_slider_length.value = 100
-    } else if(mt_slider_length.value < 0){
-        mt_slider_length.value = 0
+    let len = document.getElementById('mt_slider_main').offsetLeft + mt_slider_data['height'] / 2
+    if(mt_slider_data['point'] < 2) {
+        mt_slider_length.value = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
+        if(mt_slider_length.value > 100){
+            mt_slider_length.value = 100
+        } else if(mt_slider_length.value < 0){
+            mt_slider_length.value = 0
+        }
+        mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
+    } else {
+        let place = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
+        if( place >= 100) place = 100
+        let potNumberFloor = Math.floor(place / (100 / ( mt_slider_data['point'] - 1 )))
+        let potNumberCeil = Math.ceil(place / (100 / ( mt_slider_data['point'] - 1 )))
+        let potNumber = potNumberFloor
+        if( potNumber < mt_slider_pointNum.value ) potNumber = potNumberCeil
+        mt_slider_length.value = potNumber * (100 / ( mt_slider_data['point'] - 1 ))
+        mt_slider_pointNum.value = potNumber
     }
-    mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
+    
 }
 
 const mt_slider_freeSilder = () =>{
@@ -70,14 +82,29 @@ const mt_slider_freeSilder = () =>{
 
 const mt_slider_moveToSilder = (event) =>{
     let pos = event.x
-    let len = document.getElementById('mt_slider_main').offsetLeft + mt_slider_data['height'] / 2 
-    mt_slider_length.value = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
-    if(mt_slider_length.value > 100){
-        mt_slider_length.value = 100
-    } else if(mt_slider_length.value < 0){
-        mt_slider_length.value = 0
+    let len = document.getElementById('mt_slider_main').offsetLeft + mt_slider_data['height'] / 2
+    if(mt_slider_data['point'] < 2) {
+        mt_slider_length.value = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
+        if(mt_slider_length.value > 100){
+            mt_slider_length.value = 100
+        } else if(mt_slider_length.value < 0){
+            mt_slider_length.value = 0
+        }
+        mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
+    } else {
+        let place = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
+        if( place >= 100) place = 100
+        let potNumberFloor = Math.floor(place / (100 / ( mt_slider_data['point'] - 1 )))
+        let potNumberCeil = Math.ceil(place / (100 / ( mt_slider_data['point'] - 1 )))
+        let potNumber = potNumberFloor
+        if( potNumber < mt_slider_pointNum.value ) potNumber = potNumberCeil
+        mt_slider_length.value = potNumber * (100 / ( mt_slider_data['point'] - 1 ))
+        mt_slider_pointNum.value = potNumber
     }
-    mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
+}
+
+const mt_slider_moveToPoint = (potNum) =>{
+    mt_slider_length.value = potNum * (100 / ( mt_slider_data['point'] - 1 ))
 }
 
 </script>
@@ -101,7 +128,21 @@ const mt_slider_moveToSilder = (event) =>{
                     borderRadius: (mt_slider_data['height'] - 4) / 2 +'px',
                 }"></div>
         </div>
-        <div id="mt_slider_bobber" style="position: absolute; cursor: move; background-color: white; border-style: solid; border-width: 2px;"
+        <div v-if="mt_slider_data['point'] > 1 ">
+            <div v-for="pot in mt_slider_data['point']">
+                <div :id="'point' + pot - 1" style="position: absolute; user-select: none; background-color: white; top: 0px; border: 1px solid green;"
+                    :style="{
+                        left: ( pot - 1 ) * ( mt_slider_data['width'] - mt_slider_data['height'] ) / (mt_slider_data['point'] - 1) +'px',
+                        height: mt_slider_data['height'] +'px',
+                        width: mt_slider_data['height'] +'px',
+                        borderRadius: mt_slider_data['height'] / 2 +'px',
+                    }"
+                    @click="mt_slider_moveToPoint(pot - 1)">
+                    {{ pot }}
+                </div>
+            </div>
+        </div>
+        <div id="mt_slider_bobber" style="position: absolute; cursor: move; background-color: rgba(0,0,0,0.5); border-style: solid; border-width: 2px;"
             :style="{
                 borderColor: mt_slider_data['sltColor'],
                 height: mt_slider_data['height'] * 2 + 'px',
