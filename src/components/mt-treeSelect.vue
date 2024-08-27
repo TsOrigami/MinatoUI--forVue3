@@ -1,11 +1,19 @@
 <script setup>
 
-//2024/8/22 开始写树形选择器
-//2024/8/23 有点事
+//1.组件名称：mt-treeSelect
+//2.组件功能: 树形选择器
+//3.组件参数：
+//   defaultNode: String, 选择为空时显示的节点名称, 默认为Cascader
+//   width: Number, 组件宽度, 默认为200
+//   height: Number, 组件高度, 默认为50
+//   multiple: Boolean, 是否支持多选, 默认为false
+//   display: Number, 显示的节点数量, 默认为4
+//   options: Array, 节点数据, 默认为空
+//   双向绑定参数：data: Array, 返回选中的节点数据
 
 
 
-import { ref, defineProps, watch, onMounted, defineModel } from 'vue'
+import { ref, defineProps, onMounted, defineModel } from 'vue'
 
 const mt_treeSelect_data = defineProps({
     'defaultNode': {
@@ -54,7 +62,7 @@ onMounted(()=>{
 })
 
 const mt_treeSelect_create = () =>{
-    mt_treeSelect_createBoardItem(mt_treeSelect_data.options, 0)
+    mt_treeSelect_createBoardItem(mt_treeSelect_data.options, null, 0)
     mt_treeSelect_createMask()
 }
 
@@ -110,7 +118,7 @@ const mt_treeSelect_examineData = (item, boardNum) => {
     mt_treeSelect_ISselectTemp.value.length = boardNum + 1
     if(item.children){
         mt_treeSelect_delectBoard(boardNum + 1)
-        mt_treeSelect_createBoardItem(item.children, boardNum + 1)
+        mt_treeSelect_createBoardItem(item.children, item.value, boardNum + 1)
     } else {
         if(mt_treeSelect_ISselect.value.length != 0) {
             let flag = true
@@ -150,7 +158,7 @@ const mt_treeSelect_createBoardSingle = (item, boardNum) =>{
     const mt_treeSelect_div = document.createElement('div');
     mt_treeSelect_div.id = item.value
     mt_treeSelect_div.style.zIndex = '11'
-    mt_treeSelect_div.style.width = mt_treeSelect_data.width - 15 + 'px';
+    mt_treeSelect_div.style.width = mt_treeSelect_data.width - (boardNum * (mt_treeSelect_data.width * 0.1)) - 15 + 'px';
     mt_treeSelect_div.style.height = mt_treeSelect_data.height + 'px';
     mt_treeSelect_div.style.lineHeight = mt_treeSelect_data.height + 'px';
     mt_treeSelect_div.style.fontSize = mt_treeSelect_data.height * 0.3 + 'px'
@@ -184,28 +192,29 @@ const mt_treeSelect_createBoardSingle = (item, boardNum) =>{
     mt_treeSelect_div.onclick = function(){mt_treeSelect_examineData(item, boardNum)}
 }
 
-const mt_treeSelect_createBoardItem = (cascaderData, boardNum) =>{
+const mt_treeSelect_createBoardItem = (cascaderData, value, boardNum) =>{
     let newBoardID = "mt_treeSelect_cascaderBoard" + boardNum
-    mt_treeSelect_createBoard("mt_treeSelect_ColorExcMain", newBoardID, boardNum)
+    mt_treeSelect_createBoard("mt_treeSelect_ColorExcMain", newBoardID, boardNum, value)
     for(let item in cascaderData){
         mt_treeSelect_createBoardSingle(cascaderData[item], boardNum)
     }
 }
 
-const mt_treeSelect_createBoard = (oldBoardID, newBoardID, boardNum) =>{
+const mt_treeSelect_createBoard = (oldBoardID, newBoardID, boardNum, value) =>{
     if(document.getElementById(newBoardID)) return
-    const Selected = document.getElementById(oldBoardID)
+    let Selected = document.getElementById(oldBoardID)
+    if(value != null) Selected = document.getElementById(value)
     const cascaderBoard = document.createElement('div')
     cascaderBoard.id = newBoardID
     cascaderBoard.style.zIndex = '10'
-    cascaderBoard.style.position = "absolute"
-    cascaderBoard.style.width = mt_treeSelect_data.width - (boardNum * (mt_treeSelect_data.width * 0.2))  +'px' 
+    cascaderBoard.style.position = "relative"
+    cascaderBoard.style.width = mt_treeSelect_data.width - (boardNum * (mt_treeSelect_data.width * 0.1))  +'px' 
     cascaderBoard.style.margin = "2px 0 0 0"
-    cascaderBoard.style.height = mt_treeSelect_data.height * mt_treeSelect_data.display+'px';
+    if(value == null) cascaderBoard.style.height = mt_treeSelect_data.height * mt_treeSelect_data.display+'px';
     cascaderBoard.style.borderRadius = "10px";
-    cascaderBoard.style.border = "2px solid blue";
+    if(value == null) cascaderBoard.style.border = "2px solid blue";
     cascaderBoard.style.backgroundColor = "white";
-    cascaderBoard.style.left = boardNum * (mt_treeSelect_data.width * 0.2) +'px'
+    cascaderBoard.style.left = boardNum * (mt_treeSelect_data.width * 0.1) +'px'
     cascaderBoard.style.overflow = "scroll"
     cascaderBoard.style.overflowX = "hidden"
     cascaderBoard.style.scrollbarWidth = "none"
