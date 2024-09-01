@@ -8,6 +8,7 @@
 //      color: String，滑块颜色，默认gray
 //      sltColor: String，滑块选中部分颜色 / 滑块浮标边框颜色，默认skyblue
 //      point: Number, 固定点的数量, 会将滑块均分。
+//      whenup: Boolean, 是否在松开时才返回值, 默认为false
 //      双向绑定参数: v-model: Number, 选中部分占比，范围为0-100，保留整数
 
 
@@ -32,7 +33,11 @@ const mt_slider_data = defineProps({
     },
     'point': {
         type: Number,
-        default: 4
+        default: 0
+    },
+    'whenup':{
+        type: Boolean,
+        default:false
     }
 })
 
@@ -41,6 +46,7 @@ const mt_slider_sltData = defineModel({
     default: 0
 })
 
+const mt_slider_sltData_onUP = ref(0)
 const mt_slider_length = ref(0)
 const mt_slider_pointNum = ref(0)
 
@@ -60,7 +66,8 @@ const mt_slider_moveSilder = (event) =>{
         } else if(mt_slider_length.value < 0){
             mt_slider_length.value = 0
         }
-        mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
+        if(mt_slider_data['whenup']) mt_slider_sltData_onUP.value = Number(mt_slider_length.value.toFixed(0))
+        else mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
     } else {
         let place = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
         if( place >= 100) place = 100
@@ -78,6 +85,9 @@ const mt_slider_freeSilder = () =>{
     const body = document.body
     body.removeEventListener('mousemove',mt_slider_moveSilder)
     body.removeEventListener('mouseup', mt_slider_freeSilder)
+    if(mt_slider_data['whenup']) {
+        mt_slider_sltData.value = mt_slider_sltData_onUP.value
+    }
 }
 
 const mt_slider_moveToSilder = (event) =>{
@@ -90,7 +100,8 @@ const mt_slider_moveToSilder = (event) =>{
         } else if(mt_slider_length.value < 0){
             mt_slider_length.value = 0
         }
-        mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
+        if(mt_slider_data['whenup']) mt_slider_sltData_onUP.value = Number(mt_slider_length.value.toFixed(0))
+        else mt_slider_sltData.value = Number(mt_slider_length.value.toFixed(0))
     } else {
         let place = ((pos - len) / (mt_slider_data['width'] - mt_slider_data['height'])) * 100
         if( place >= 100) place = 100
@@ -142,7 +153,7 @@ const mt_slider_moveToPoint = (potNum) =>{
                 </div>
             </div>
         </div>
-        <div id="mt_slider_bobber" style="position: absolute; cursor: move; background-color: rgba(0,0,0,0.5); border-style: solid; border-width: 2px;"
+        <div id="mt_slider_bobber" style="position: absolute; cursor: move; background-color: white; border-style: solid; border-width: 2px;"
             :style="{
                 borderColor: mt_slider_data['sltColor'],
                 height: mt_slider_data['height'] * 2 + 'px',
